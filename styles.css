@@ -71,3 +71,12 @@ a{color:inherit}.container{width:min(1120px,calc(100% - 32px));margin:auto}.skip
 .mode-tag{display:inline-flex;align-self:flex-start;padding:.3rem .7rem;border-radius:999px;background:rgba(255,255,255,.14);font-weight:700;font-size:.85rem}
 .big-mode-btn{font-size:1.05rem;padding:.95rem 1.2rem}
 @media (max-width: 800px){.mode-choice-top{grid-template-columns:1fr}}
+
+
+/* Mixed kids + parents homepage */
+.hero-mixed .mode-choice-card.normal{background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(103,173,255,.10)); border-color:rgba(255,255,255,.18)}
+.hero-mixed .mode-choice-card.game{background:linear-gradient(180deg, rgba(152,91,255,.26), rgba(31,17,92,.42)); border-color:rgba(255,222,130,.25)}
+.hero-mixed .big-mode-btn{font-size:1.08rem}
+.convince-note{margin-top:.9rem;padding:.8rem 1rem;border-radius:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12)}
+.trust-strip .grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+@media (max-width: 800px){.trust-strip .grid-3{grid-template-columns:1fr}}
