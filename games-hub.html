@@ -4,49 +4,133 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Games Hub | Maths Universe</title>
-  <meta name="description" content="A more interactive Maths Universe games hub with quests, races, puzzles, quick-fire maths, and printable practice links.">
+  <meta name="description" content="A more game-like Maths Universe arcade with asteroids, monsters, racing, treasure doors, pizza fractions, rewards, and maths missions.">
   <link rel="icon" href="favicon.svg">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header"><div class="container nav-bar"><a class="brand" href="index.html"><img src="logo-final.png" alt="Maths Universe logo"><span class="brand-text"><span>Maths Universe</span><small>Games Hub Edition</small></span></a><button class="nav-toggle" data-nav-toggle>Menu</button><nav class="nav-links" data-nav-links><a href="index.html">Home</a><a href="game-arena.html">Game Arena</a><a href="games-hub.html" class="active">Games Hub</a><a href="interactive-lab.html">Interactive Lab</a><a href="premium.html">Premium</a><a href="mission-control.html">Mission Control</a><a href="worksheet-hub.html">Worksheets</a><a href="teacher.html">Teacher Portal</a><a href="formula-vault.html">Formula Vault</a><a href="mistake-library.html">Mistake Library</a></nav><div class="progress-chip"><span data-progress-text>0/14 missions completed</span></div><div data-teacher-status class="teacher-status off">Student mode</div></div></header>
+<header class="site-header"><div class="container nav-bar"><a class="brand" href="index.html"><img src="logo-final.png" alt="Maths Universe logo"><span class="brand-text"><span>Maths Universe</span><small>Arcade 2.0</small></span></a><button class="nav-toggle" data-nav-toggle>Menu</button><nav class="nav-links" data-nav-links><a href="index.html">Home</a><a href="game-arena.html">Game Arena</a><a href="games-hub.html" class="active">Games Hub</a><a href="interactive-lab.html">Interactive Lab</a><a href="premium.html">Premium</a><a href="mission-control.html">Mission Control</a><a href="worksheet-hub.html">Worksheets</a><a href="teacher.html">Teacher Portal</a><a href="formula-vault.html">Formula Vault</a><a href="mistake-library.html">Mistake Library</a></nav><div class="progress-chip"><span data-progress-text>0/14 missions completed</span></div><div data-teacher-status class="teacher-status off">Student mode</div></div></header>
 <div class="mode-banner hidden" data-teacher-banner><div class="container"><span>Teacher mode active for <strong data-teacher-name>Teacher</strong>. Student locks are bypassed on this browser.</span><a href="teacher.html">Open Teacher Portal</a></div></div>
 <main id="main">
-<section class="container page-hero arcade-hero"><div class="breadcrumb"><a href="index.html">Home</a><span>/</span><span>Games Hub</span></div><div class="topic-meta"><span class="badge">New</span><span class="badge">Game directory</span><span class="badge">Quick play</span></div><h1>Maths Universe Games Hub</h1><p class="lead">Pick a game like a real arcade: quick-fire practice, space races, logic puzzles, monster quests, printable practice, and calm learning tools — all without removing the normal course.</p><div class="arcade-stats"><span>⭐ Stars <b data-arcade-stars>0</b></span><span>🔥 Best streak <b data-arcade-best>0</b></span><span>🏁 Races won <b data-races-won>0</b></span><span>🧩 Puzzles solved <b data-puzzles-solved>0</b></span></div></section>
+<section class="arcade2-hero">
+  <div class="container arcade2-hero-grid">
+    <div>
+      <div class="breadcrumb"><a href="index.html">Home</a><span>/</span><span>Games Hub</span></div>
+      <div class="topic-meta"><span class="badge">Arcade 2.0</span><span class="badge">Real mini games</span><span class="badge">Rewards save</span></div>
+      <h1>Maths Universe Arcade</h1>
+      <p class="lead">This version is much more gamey: shoot asteroids, defeat monsters, race rockets, open treasure doors, build pizza fractions, collect coins, unlock badges, and still learn real maths.</p>
+      <div class="arcade2-actions">
+        <button class="btn game-btn" data-jump-game="asteroids">Play Asteroid Blaster</button>
+        <button class="btn secondary" data-jump-game="tower">Try Monster Tower</button>
+        <button class="btn secondary" data-daily-chest>Open Daily Chest</button>
+      </div>
+    </div>
+    <div class="arcade2-console card pad">
+      <div class="arcade-screen">
+        <div class="pixel-stars"></div>
+        <div class="arcade-avatar" data-arcade-avatar>🧑‍🚀</div>
+        <div class="arcade-title">PLAYER CARD</div>
+        <div class="arcade-level">Level <b data-arcade-level>1</b></div>
+        <div class="xp-bar"><span data-xp-bar></span></div>
+      </div>
+      <div class="arcade2-stats">
+        <span>🪙 Coins <b data-coins>0</b></span>
+        <span>💎 Gems <b data-gems>0</b></span>
+        <span>⭐ Stars <b data-stars>0</b></span>
+        <span>🔥 Best <b data-best-streak>0</b></span>
+      </div>
+      <div class="avatar-row" data-avatar-picker>
+        <button data-avatar="🧑‍🚀">🧑‍🚀</button><button data-avatar="🦊">🦊</button><button data-avatar="🐉">🐉</button><button data-avatar="🤖">🤖</button><button data-avatar="🧙">🧙</button>
+      </div>
+    </div>
+  </div>
+</section>
 
-<section class="container section"><div class="arcade-layout">
-  <aside class="card pad arcade-side">
-    <h2>Find a game</h2>
-    <label class="arcade-label">Topic<select data-game-filter-topic><option value="all">All topics</option><option value="addition">Addition</option><option value="multiplication">Times tables</option><option value="fractions">Fractions</option><option value="place-value">Place value</option><option value="logic">Logic</option><option value="worksheets">Worksheets</option></select></label>
-    <label class="arcade-label">Style<select data-game-filter-style><option value="all">All styles</option><option value="battle">Battle</option><option value="race">Race</option><option value="speed">Speed</option><option value="puzzle">Puzzle</option><option value="calm">Calm</option><option value="print">Print</option></select></label>
-    <div class="arcade-mini-note">This hub keeps your old pages. It just adds a more game-like front door.</div>
-  </aside>
-  <section class="arcade-card-grid" data-game-card-grid>
-    <a class="arcade-game-card" data-topic="battle multiplication addition fractions" data-style="battle" href="game-arena.html"><span>⚔️</span><h3>Monster Battle Arena</h3><p>Answer maths to damage monsters, earn coins, and build streaks.</p><small>Battle • mixed topics</small></a>
-    <a class="arcade-game-card" data-topic="addition multiplication fractions place-value" data-style="calm" href="interactive-lab.html"><span>🧪</span><h3>Interactive Lab</h3><p>Fraction builder, place-value machine, equation balance, speed run, and reward wheel.</p><small>Calm tools • interactive</small></a>
-    <a class="arcade-game-card" data-topic="worksheets fractions addition multiplication" data-style="print" href="premium.html#worksheet-generator"><span>🖨️</span><h3>Worksheet Studio</h3><p>Create printable worksheets with topics, difficulty, answer checking, and answer keys.</p><small>Print • practice</small></a>
-    <button class="arcade-game-card" data-open-panel="quickfire" data-topic="multiplication addition" data-style="speed"><span>⏱️</span><h3>Quick-Fire Sprint</h3><p>Beat as many questions as you can before the timer runs out.</p><small>Speed • mental maths</small></button>
-    <button class="arcade-game-card" data-open-panel="race" data-topic="multiplication addition" data-style="race"><span>🏁</span><h3>Space Race</h3><p>Correct answers power your ship. Try to beat the ghost racer.</p><small>Race • fluency</small></button>
-    <button class="arcade-game-card" data-open-panel="logic" data-topic="logic" data-style="puzzle"><span>🧩</span><h3>Logic Door Puzzle</h3><p>Use numbers and operations to open the space door.</p><small>Puzzle • reasoning</small></button>
-    <button class="arcade-game-card" data-open-panel="quest" data-topic="fractions place-value addition multiplication" data-style="battle"><span>🗺️</span><h3>Mini Quest Board</h3><p>Pick a mission card, answer questions, collect stars, and unlock a tiny story reward.</p><small>Quest • adventure</small></button>
-    <a class="arcade-game-card" data-topic="logic" data-style="puzzle calm" href="mistake-library.html"><span>🔎</span><h3>Mistake Detective</h3><p>Find the trap, fix the error, and learn why the answer changes.</p><small>Puzzle • fix it</small></a>
-  </section>
-</div></section>
+<section class="container section">
+  <div class="arcade2-map card pad">
+    <div class="card-head"><div><h2>Choose a game zone</h2><p class="small">These are not just links. They are playable mini games with lives, timers, moving objects, rewards, and hints.</p></div><button class="btn secondary" data-reset-arcade>Reset arcade stats</button></div>
+    <div class="zone-grid">
+      <button class="zone-card" data-jump-game="asteroids"><span>☄️</span><strong>Asteroid Blaster</strong><small>Click the correct asteroid before time runs out.</small></button>
+      <button class="zone-card" data-jump-game="tower"><span>👹</span><strong>Monster Tower</strong><small>Climb floors, beat enemies, use spells.</small></button>
+      <button class="zone-card" data-jump-game="race"><span>🏎️</span><strong>Rocket Race</strong><small>Correct answers boost your rocket past the ghost.</small></button>
+      <button class="zone-card" data-jump-game="treasure"><span>💰</span><strong>Treasure Door</strong><small>Use logic to crack the target number.</small></button>
+      <button class="zone-card" data-jump-game="pizza"><span>🍕</span><strong>Pizza Fractions</strong><small>Build the fraction target by tapping slices.</small></button>
+      <button class="zone-card" data-jump-game="boss"><span>🐲</span><strong>Boss Rush</strong><small>Survive five waves of mixed maths.</small></button>
+    </div>
+  </div>
+</section>
 
-<section class="container section"><div class="arcade-panels">
-  <section class="card pad arcade-panel" id="quickfire" data-arcade-panel="quickfire"><div class="card-head"><div><h2>Quick-Fire Sprint</h2><p class="small">A fast mental maths challenge inspired by quick-answer practice games.</p></div><span class="timer-pill" data-sprint-time>30</span></div><div class="sprint-controls"><label>Topic<select data-sprint-topic><option value="mixed">Mixed</option><option value="add">Addition</option><option value="times">Times tables</option><option value="fractions">Fractions</option></select></label><button class="btn game-btn" data-start-sprint>Start sprint</button></div><div class="speed-question" data-sprint-question>Press start</div><div class="battle-options" data-sprint-options></div><p class="battle-feedback" data-sprint-feedback>Try to answer quickly. Wrong answers show a hint.</p></section>
+<section class="container section game-zone" id="asteroids" data-game-zone="asteroids">
+  <div class="card pad game-shell asteroid-shell">
+    <div class="game-top"><div><div class="eyebrow">Zone 1</div><h2>☄️ Asteroid Blaster</h2><p class="small">Shoot the asteroid with the correct answer. Wrong clicks cost hearts.</p></div><div class="game-status"><span>❤️ <b data-asteroid-hearts>3</b></span><span>⏱️ <b data-asteroid-time>45</b></span><span>Score <b data-asteroid-score>0</b></span></div></div>
+    <div class="game-question" data-asteroid-question>Press Start Mission</div>
+    <div class="asteroid-field" data-asteroid-field><div class="field-message">Ready?</div></div>
+    <div class="hero-actions"><button class="btn game-btn" data-start-asteroids>Start Mission</button><button class="btn secondary" data-asteroid-hint>Hint</button></div>
+    <p class="battle-feedback" data-asteroid-feedback>Click the moving answer asteroids. It feels more like an arcade game now.</p>
+  </div>
+</section>
 
-  <section class="card pad arcade-panel" id="race" data-arcade-panel="race"><div class="card-head"><div><h2>Space Race</h2><p class="small">Correct answers push your ship forward. Beat the ghost racer before it reaches the finish.</p></div><span class="badge">Race mode</span></div><div class="race-track"><div class="race-lane"><span class="race-ship" data-player-ship>🚀</span></div><div class="race-lane ghost"><span class="race-ship" data-ghost-ship>👻</span></div><span class="finish-line">FINISH</span></div><h3 data-race-question>Press start race</h3><div class="battle-options" data-race-options></div><div class="hero-actions"><button class="btn game-btn" data-start-race>Start race</button><button class="btn secondary" data-reset-race>Reset race</button></div><p class="battle-feedback" data-race-feedback>Answer correctly to move. Wrong answers give a hint and the ghost keeps moving.</p></section>
+<section class="container section game-zone" id="tower" data-game-zone="tower">
+  <div class="card pad game-shell tower-shell">
+    <div class="game-top"><div><div class="eyebrow">Zone 2</div><h2>👹 Monster Tower</h2><p class="small">Each floor has a monster. Correct answers cast spells. Wrong answers damage your shield.</p></div><div class="game-status"><span>Floor <b data-tower-floor>1</b></span><span>Shield <b data-tower-hp>100</b></span><span>Monster <b data-monster-hp>100</b></span></div></div>
+    <div class="tower-stage"><div class="player-side"><div class="fighter" data-tower-player>🧑‍🚀</div><div class="mini-health"><span data-player-health></span></div></div><div class="spell-bolt" data-spell-bolt>✨</div><div class="monster-side"><div class="fighter monster" data-monster-face>👾</div><div class="mini-health monster"><span data-monster-health></span></div></div></div>
+    <div class="game-question" data-tower-question>Press Start Tower</div>
+    <div class="battle-options" data-tower-options></div>
+    <div class="hero-actions"><button class="btn game-btn" data-start-tower>Start Tower</button><button class="btn secondary" data-tower-power="shield">Use Shield Boost</button><button class="btn secondary" data-tower-power="blast">Use Mega Blast</button></div>
+    <p class="battle-feedback" data-tower-feedback>Climb the tower and win coins for each floor.</p>
+  </div>
+</section>
 
-  <section class="card pad arcade-panel" id="logic" data-arcade-panel="logic"><div class="card-head"><div><h2>Logic Door Puzzle</h2><p class="small">Use all four numbers and any operation to hit the target. This builds reasoning, not just speed.</p></div><span class="badge">Puzzle</span></div><div class="logic-target"><span>Target</span><strong data-logic-target>24</strong></div><div class="logic-numbers" data-logic-numbers></div><label class="arcade-label">Your expression<input data-logic-expression placeholder="Example: (6 + 2) × 3"></label><div class="hero-actions"><button class="btn game-btn" data-check-logic>Open door</button><button class="btn secondary" data-new-logic>New puzzle</button><button class="btn secondary" data-logic-hint>Hint</button></div><p class="battle-feedback" data-logic-feedback>Use the numbers once each. You can use +, −, ×, ÷ and brackets.</p></section>
+<section class="container section game-zone" id="race" data-game-zone="race">
+  <div class="card pad game-shell race2-shell">
+    <div class="game-top"><div><div class="eyebrow">Zone 3</div><h2>🏎️ Rocket Race</h2><p class="small">Answer quickly to boost your rocket. The ghost moves every second.</p></div><div class="game-status"><span>Lap <b data-race-lap>1</b>/3</span><span>Wins <b data-race-wins>0</b></span></div></div>
+    <div class="race2-track"><div class="race-road"><span class="racer player" data-racer-player>🚀</span><span class="racer ghost" data-racer-ghost>👻</span><span class="race2-finish">FINISH</span></div></div>
+    <div class="game-question" data-race2-question>Press Start Race</div>
+    <div class="battle-options" data-race2-options></div>
+    <div class="hero-actions"><button class="btn game-btn" data-start-race2>Start Race</button><button class="btn secondary" data-race-nitro>Use Nitro</button></div>
+    <p class="battle-feedback" data-race2-feedback>Win 3 laps to get a gem.</p>
+  </div>
+</section>
 
-  <section class="card pad arcade-panel" id="quest" data-arcade-panel="quest"><div class="card-head"><div><h2>Mini Quest Board</h2><p class="small">Pick a quest. Each correct answer lights up a star and moves the story forward.</p></div><span class="badge">Adventure</span></div><div class="quest-board" data-quest-board></div><div class="quest-play hidden" data-quest-play><h3 data-quest-title>Quest</h3><p data-quest-story></p><h2 data-quest-question>Question</h2><div class="battle-options" data-quest-options></div><p class="battle-feedback" data-quest-feedback>Pick an answer.</p></div></section>
-</div></section>
+<section class="container section game-zone" id="treasure" data-game-zone="treasure">
+  <div class="card pad game-shell treasure-shell">
+    <div class="game-top"><div><div class="eyebrow">Zone 4</div><h2>💰 Treasure Door</h2><p class="small">Use every number once to make the target. This is the logic/puzzle part.</p></div><div class="game-status"><span>Doors opened <b data-doors-opened>0</b></span></div></div>
+    <div class="treasure-door"><div class="door-lock" data-door-lock>🔒</div><div class="logic-target"><span>Target</span><strong data-door-target>24</strong></div><div class="logic-numbers" data-door-numbers></div></div>
+    <label class="arcade-label">Your expression<input data-door-expression placeholder="Example: (6 + 2) × 3"></label>
+    <div class="hero-actions"><button class="btn game-btn" data-check-door>Open Door</button><button class="btn secondary" data-new-door>New Door</button><button class="btn secondary" data-door-hint>Hint</button></div>
+    <p class="battle-feedback" data-door-feedback>Use the shown numbers once each. Use +, −, ×, ÷ and brackets.</p>
+  </div>
+</section>
 
-<section class="container section"><div class="card pad"><div class="card-head"><div><h2>How this is inspired by great maths game sites</h2><p class="small">Maths Universe now has a game directory, speed practice, race mode, logic puzzles, quest style learning, and printable practice links — but the original lessons, worksheets, premium tools, and teacher pages are still here.</p></div></div><div class="inspiration-grid"><span>Adventure + battles</span><span>Topic directory</span><span>Quick-fire fluency</span><span>Race practice</span><span>Logic challenges</span><span>Printable practice</span></div></div></section>
+<section class="container section game-zone" id="pizza" data-game-zone="pizza">
+  <div class="card pad game-shell pizza-shell">
+    <div class="game-top"><div><div class="eyebrow">Zone 5</div><h2>🍕 Pizza Fractions</h2><p class="small">Tap slices to match the target fraction. This makes fractions visual and game-like.</p></div><div class="game-status"><span>Orders <b data-pizza-orders>0</b></span><span>Tips <b data-pizza-tips>0</b></span></div></div>
+    <div class="pizza-order">Make: <strong data-pizza-target>1/2</strong></div>
+    <div class="pizza-game"><div class="pizza-pan" data-pizza-pan></div><div class="pizza-controls"><label>Slices<select data-pizza-den><option>2</option><option selected>4</option><option>6</option><option>8</option><option>10</option></select></label><button class="btn secondary" data-reset-pizza>Clear pizza</button><button class="btn game-btn" data-check-pizza>Serve pizza</button></div></div>
+    <p class="battle-feedback" data-pizza-feedback>Tap slices to shade them. Example: 2 out of 4 slices is the same amount as 1 out of 2.</p>
+  </div>
+</section>
+
+<section class="container section game-zone" id="boss" data-game-zone="boss">
+  <div class="card pad game-shell boss-shell">
+    <div class="game-top"><div><div class="eyebrow">Final Zone</div><h2>🐲 Boss Rush</h2><p class="small">Five waves. Mixed topics. Boss gets angry when you are slow.</p></div><div class="game-status"><span>Wave <b data-boss-wave>0</b>/5</span><span>Hearts <b data-boss-hearts>3</b></span><span>Combo <b data-boss-combo>0</b></span></div></div>
+    <div class="boss-arena"><div class="boss-dragon" data-boss-face>🐲</div><div class="boss-health"><span data-boss-health></span></div></div>
+    <div class="game-question" data-boss-question>Press Start Boss Rush</div>
+    <div class="battle-options" data-boss-options></div>
+    <div class="hero-actions"><button class="btn game-btn" data-start-boss>Start Boss Rush</button><button class="btn secondary" data-boss-skip>Use Hint</button></div>
+    <p class="battle-feedback" data-boss-feedback>Beat the boss to win gems and a badge.</p>
+  </div>
+</section>
+
+<section class="container section">
+  <div class="card pad badge-case">
+    <div class="card-head"><div><h2>Badge case</h2><p class="small">Badges unlock when you win different games. They save on this browser.</p></div></div>
+    <div class="badge-grid" data-badge-grid></div>
+  </div>
+</section>
 </main>
-<footer class="footer"><div class="container footer-grid"><div><strong>Maths Universe</strong><br><span>Normal learning, game-style practice, worksheets, and teacher tools together.</span></div><div class="footer-links"><a href="index.html#unlock-map">Course map</a><a href="worksheet-hub.html">Worksheets</a><a href="certificate.html">Certificate</a></div></div></footer>
+<footer class="footer"><div class="container footer-grid"><div><strong>Maths Universe</strong><br><span>Real mini games, normal learning, worksheets, premium tools, and teacher support together.</span></div><div class="footer-links"><a href="index.html#unlock-map">Course map</a><a href="worksheet-hub.html">Worksheets</a><a href="certificate.html">Certificate</a></div></div></footer>
 <script src="app.js"></script>
 <script src="games-hub.js"></script>
 </body>

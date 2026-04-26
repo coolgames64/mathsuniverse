@@ -1,63 +1,84 @@
-
 (function(){
-  const KEY='mathsUniverseArcadeStatsV1';
+  const KEY='mathsUniverseArcade2StatsV1';
   const $=s=>document.querySelector(s); const $$=s=>[...document.querySelectorAll(s)];
-  function stats(){try{return JSON.parse(localStorage.getItem(KEY))||{stars:0,best:0,races:0,puzzles:0,questStars:{}}}catch(e){return {stars:0,best:0,races:0,puzzles:0,questStars:{}}}}
-  function save(s){localStorage.setItem(KEY,JSON.stringify(s)); renderStats();}
-  function renderStats(){const s=stats(); $$('[data-arcade-stars]').forEach(e=>e.textContent=s.stars||0); $$('[data-arcade-best]').forEach(e=>e.textContent=s.best||0); $$('[data-races-won]').forEach(e=>e.textContent=s.races||0); $$('[data-puzzles-solved]').forEach(e=>e.textContent=s.puzzles||0);}
+  const defaultStats={coins:0,gems:0,stars:0,xp:0,bestStreak:0,avatar:'🧑‍🚀',raceWins:0,doors:0,pizzaOrders:0,pizzaTips:0,badges:{}};
+  function load(){try{return {...defaultStats,...(JSON.parse(localStorage.getItem(KEY))||{})}}catch(e){return {...defaultStats}}}
+  function save(s){localStorage.setItem(KEY,JSON.stringify(s)); render();}
+  function add(points={}){const s=load(); for(const k of ['coins','gems','stars','xp']) s[k]=(s[k]||0)+(points[k]||0); if(points.streak) s.bestStreak=Math.max(s.bestStreak||0,points.streak); if(points.badge) s.badges={...(s.badges||{}),[points.badge]:true}; save(s);}
+  function level(xp){return Math.floor((xp||0)/120)+1}
+  function render(){const s=load(); $$('[data-coins]').forEach(e=>e.textContent=s.coins||0); $$('[data-gems]').forEach(e=>e.textContent=s.gems||0); $$('[data-stars]').forEach(e=>e.textContent=s.stars||0); $$('[data-best-streak]').forEach(e=>e.textContent=s.bestStreak||0); $$('[data-arcade-level]').forEach(e=>e.textContent=level(s.xp)); $$('[data-arcade-avatar]').forEach(e=>e.textContent=s.avatar||'🧑‍🚀'); $$('[data-race-wins]').forEach(e=>e.textContent=s.raceWins||0); $$('[data-doors-opened]').forEach(e=>e.textContent=s.doors||0); $$('[data-pizza-orders]').forEach(e=>e.textContent=s.pizzaOrders||0); $$('[data-pizza-tips]').forEach(e=>e.textContent=s.pizzaTips||0); const xpPct=((s.xp||0)%120)/120*100; $$('[data-xp-bar]').forEach(e=>e.style.width=xpPct+'%'); renderBadges(s);}
+  const badges=[['asteroids','☄️','Asteroid Ace'],['tower','👹','Tower Climber'],['race','🏁','Rocket Racer'],['treasure','💰','Door Cracker'],['pizza','🍕','Fraction Chef'],['boss','🐲','Boss Beater'],['daily','🎁','Daily Explorer']];
+  function renderBadges(s=load()){const grid=$('[data-badge-grid]'); if(!grid)return; grid.innerHTML=badges.map(b=>`<div class="badge-tile ${s.badges&&s.badges[b[0]]?'earned':''}"><span>${b[1]}</span><strong>${b[2]}</strong><small>${s.badges&&s.badges[b[0]]?'Unlocked':'Locked'}</small></div>`).join('');}
   function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a}
-  function shuffle(a){for(let i=a.length-1;i>0;i--){const j=rand(0,i); [a[i],a[j]]=[a[j],a[i]];} return a}
-  function safeEval(expr){
-    if(!/^[0-9+\-*/().\s]+$/.test(expr)) throw new Error('Only numbers, +, -, *, / and brackets are allowed.');
-    return Function('"use strict";return ('+expr+')')();
+  function shuffle(a){for(let i=a.length-1;i>0;i--){const j=rand(0,i);[a[i],a[j]]=[a[j],a[i]]}return a}
+  function safeEval(expr){if(!/^[0-9+\-*/().\s]+$/.test(expr))throw new Error('Only numbers, +, -, *, / and brackets are allowed.'); return Function('"use strict";return ('+expr+')')();}
+  function show(el,msg,type=''){if(!el)return; el.textContent=msg; el.className='battle-feedback '+type;}
+  function beep(kind='good'){try{const AudioCtx=window.AudioContext||window.webkitAudioContext; const ctx=new AudioCtx(); const o=ctx.createOscillator(); const g=ctx.createGain(); o.connect(g); g.connect(ctx.destination); const freqs=kind==='bad'?[170,120]:kind==='win'?[440,660,880]:[500,750]; let t=ctx.currentTime; g.gain.value=.035; freqs.forEach((f,i)=>{o.frequency.setValueAtTime(f,t+i*.08)}); o.start(t); o.stop(t+.22);}catch(e){}}
+  function confetti(text='LEVEL UP!'){const c=document.createElement('div'); c.className='arcade-confetti'; c.textContent=text; document.body.appendChild(c); setTimeout(()=>c.remove(),1400);}
+  function makeQuestion(kind='mixed',level=1){
+    const types=kind==='mixed'?['add','times','subtract','fractions','place']: [kind]; const t=types[rand(0,types.length-1)]; let q='',ans=0,hint='';
+    if(t==='add'){const a=rand(10,80+level*12),b=rand(5,70+level*10); q=`${a} + ${b}`; ans=a+b; hint='Split into tens and ones, then add.';}
+    if(t==='subtract'){const b=rand(8,60+level*5),a=b+rand(20,110+level*10); q=`${a} − ${b}`; ans=a-b; hint='Count back or split the second number.';}
+    if(t==='times'){const a=rand(2,12),b=rand(2,12); q=`${a} × ${b}`; ans=a*b; hint='Use your times-table facts.';}
+    if(t==='fractions'){const d=[2,3,4,5,6,8,10][rand(0,6)]; const n=rand(1,d-1); const total=d*rand(2,8); q=`${n}/${d} of ${total}`; ans=total/d*n; hint='Divide by the bottom number, then multiply by the top number.';}
+    if(t==='place'){const a=rand(2,9), b=rand(0,9), c=rand(0,9); const num=a*100+b*10+c; q=`What is the tens digit in ${num}?`; ans=b; hint='Hundreds, tens, ones. The middle digit is the tens digit.';}
+    const opts=[ans]; while(opts.length<4){let spread=Math.max(5,Math.floor(ans/3)); let w=ans+rand(-spread,spread); if(w!==ans && w>=0 && !opts.includes(w)) opts.push(w)}
+    return {q,ans,opts:shuffle(opts),hint,type:t};
   }
-  function makeQuestion(kind='mixed'){
-    const types=kind==='mixed'?['add','times','fractions']: [kind];
-    const t=types[rand(0,types.length-1)]; let q='', ans=0, hint='';
-    if(t==='add'){const a=rand(12,99),b=rand(8,88); q=`${a} + ${b}`; ans=a+b; hint='Split into tens and ones, then add.';}
-    if(t==='times'){const a=rand(2,12),b=rand(2,12); q=`${a} × ${b}`; ans=a*b; hint='Use a known times-table fact or double/halve.';}
-    if(t==='fractions'){const d=[2,3,4,5,6,8][rand(0,5)]; const n=rand(1,d-1); const total=d*rand(2,8); q=`${n}/${d} of ${total}`; ans=total/d*n; hint='Divide by the bottom number, then multiply by the top number.';}
-    const opts=[ans]; while(opts.length<4){let w=ans+rand(-10,10); if(w!==ans && w>=0 && !opts.includes(w)) opts.push(w)}
-    return {q,ans,opts:shuffle(opts),hint};
-  }
-  function showOptions(container, opts, cb){container.innerHTML=opts.map(v=>`<button class="option" data-val="${v}">${v}</button>`).join(''); container.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>cb(Number(b.dataset.val), b)));}
-  function showPanel(id){$$('[data-arcade-panel]').forEach(p=>p.classList.remove('active')); const p=$(`[data-arcade-panel="${id}"]`); if(p){p.classList.add('active'); p.scrollIntoView({behavior:'smooth',block:'start'});} }
+  function options(container, opts, cb){if(!container)return; container.innerHTML=opts.map(v=>`<button class="option" data-val="${v}">${v}</button>`).join(''); container.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>cb(Number(b.dataset.val),b)));}
+  function jump(id){const el=document.getElementById(id); if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
+  $$('[data-jump-game]').forEach(b=>b.addEventListener('click',()=>jump(b.dataset.jumpGame)));
+  $('[data-reset-arcade]')?.addEventListener('click',()=>{if(confirm('Reset Arcade 2.0 coins, gems, stars, badges, and avatar?')){localStorage.removeItem(KEY);render();confetti('RESET');}});
+  $$('[data-avatar]').forEach(b=>b.addEventListener('click',()=>{const s=load(); s.avatar=b.dataset.avatar; save(s); beep('good');}));
+  $('[data-daily-chest]')?.addEventListener('click',()=>{const today=new Date().toDateString(); const key='mathsUniverseDailyChestV1'; if(localStorage.getItem(key)===today){confetti('Already opened'); return;} localStorage.setItem(key,today); add({coins:25,stars:10,xp:20,badge:'daily'}); confetti('DAILY CHEST +25'); beep('win');});
 
-  // filters
-  const topic=$('[data-game-filter-topic]'), style=$('[data-game-filter-style]');
-  function filterCards(){const t=topic?.value||'all', st=style?.value||'all'; $$('[data-game-card-grid] .arcade-game-card').forEach(c=>{const okT=t==='all'||(c.dataset.topic||'').includes(t); const okS=st==='all'||(c.dataset.style||'').includes(st); c.style.display=okT&&okS?'':'none';});}
-  topic?.addEventListener('change',filterCards); style?.addEventListener('change',filterCards); $$('[data-open-panel]').forEach(b=>b.addEventListener('click',()=>showPanel(b.dataset.openPanel)));
+  // Asteroid Blaster
+  let astTimer=null, astTime=45, astHearts=3, astScore=0, astCurrent=null;
+  const astField=$('[data-asteroid-field]');
+  function astRender(){ $('[data-asteroid-hearts]').textContent=astHearts; $('[data-asteroid-time]').textContent=astTime; $('[data-asteroid-score]').textContent=astScore; }
+  function astQuestion(){astCurrent=makeQuestion('mixed',level(load().xp)); $('[data-asteroid-question]').textContent=astCurrent.q; astField.innerHTML=''; const values=[...astCurrent.opts]; values.forEach((v,i)=>{const a=document.createElement('button'); a.className='asteroid-rock'; a.textContent=v; a.dataset.val=v; a.style.left=rand(3,82)+'%'; a.style.top=rand(8,72)+'%'; a.style.animationDelay=(i*.25)+'s'; a.addEventListener('click',()=>{if(Number(a.dataset.val)===astCurrent.ans){a.classList.add('boom'); astScore++; add({coins:3,stars:1,xp:8,streak:astScore}); show($('[data-asteroid-feedback]'),'Boom! Correct asteroid destroyed. +3 coins','good'); beep('good'); if(astScore>=8){clearInterval(astTimer); add({gems:1,badge:'asteroids'}); confetti('ASTEROID ACE'); show($('[data-asteroid-feedback]'),'Mission clear! You earned a gem and a badge.','good'); return;} setTimeout(astQuestion,250);}else{a.classList.add('wrong'); astHearts--; show($('[data-asteroid-feedback]'),'Wrong asteroid! Hint: '+astCurrent.hint,'bad'); beep('bad'); if(astHearts<=0) astLose(); astRender();}}); astField.appendChild(a);}); astRender();}
+  function astLose(){clearInterval(astTimer); astField.innerHTML='<div class="field-message">Mission failed. Try again!</div>'; show($('[data-asteroid-feedback]'),'Out of hearts. Start the mission again.','bad');}
+  $('[data-start-asteroids]')?.addEventListener('click',()=>{clearInterval(astTimer); astTime=45; astHearts=3; astScore=0; astQuestion(); astTimer=setInterval(()=>{astTime--; astRender(); if(astTime<=0){clearInterval(astTimer); if(astScore>=5){add({coins:10,xp:20,badge:'asteroids'}); confetti('SURVIVED'); show($('[data-asteroid-feedback]'),'Time! You survived and earned a badge.','good');}else astLose();}},1000);});
+  $('[data-asteroid-hint]')?.addEventListener('click',()=>{if(astCurrent)show($('[data-asteroid-feedback]'),astCurrent.hint,'good');});
 
-  // Sprint
-  let sprintTimer=null, sprintTime=30, sprintScore=0, sprintStreak=0, sprintCurrent=null;
-  function renderSprintQ(){const kind=$('[data-sprint-topic]')?.value||'mixed'; sprintCurrent=makeQuestion(kind); $('[data-sprint-question]').textContent=sprintCurrent.q; showOptions($('[data-sprint-options]'), sprintCurrent.opts, (v,b)=>{if(!sprintCurrent)return; if(v===sprintCurrent.ans){sprintScore++; sprintStreak++; const s=stats(); s.stars=(s.stars||0)+1; s.best=Math.max(s.best||0,sprintStreak); save(s); $('[data-sprint-feedback]').textContent=`Correct! Score ${sprintScore}. Streak ${sprintStreak}.`; $('[data-sprint-feedback]').className='battle-feedback good'; renderSprintQ();}else{b.classList.add('wrong'); sprintStreak=0; $('[data-sprint-feedback]').textContent='Try again. Hint: '+sprintCurrent.hint; $('[data-sprint-feedback]').className='battle-feedback bad';}});}
-  $('[data-start-sprint]')?.addEventListener('click',()=>{clearInterval(sprintTimer); sprintTime=30; sprintScore=0; sprintStreak=0; $('[data-sprint-time]').textContent=sprintTime; renderSprintQ(); sprintTimer=setInterval(()=>{sprintTime--; $('[data-sprint-time]').textContent=sprintTime; if(sprintTime<=0){clearInterval(sprintTimer); sprintCurrent=null; $('[data-sprint-options]').innerHTML=''; $('[data-sprint-question]').textContent='Time!'; $('[data-sprint-feedback]').textContent=`Final score: ${sprintScore}. Press start to play again.`;}},1000);});
+  // Monster Tower
+  let floor=1, playerHP=100, monsterHP=100, towerQ=null, monsterFaces=['👾','👹','🤖','🧟','🐲'];
+  function towerBars(){ $('[data-tower-floor]').textContent=floor; $('[data-tower-hp]').textContent=Math.max(0,playerHP); $('[data-monster-hp]').textContent=Math.max(0,monsterHP); $('[data-player-health]').style.width=Math.max(0,playerHP)+'%'; $('[data-monster-health]').style.width=Math.max(0,monsterHP)+'%'; $('[data-monster-face]').textContent=monsterFaces[(floor-1)%monsterFaces.length]; $('[data-tower-player]').textContent=load().avatar; }
+  function towerQuestion(){towerQ=makeQuestion(floor>3?'mixed':'times',floor); $('[data-tower-question]').textContent=towerQ.q; options($('[data-tower-options]'),towerQ.opts,(v,b)=>{if(v===towerQ.ans){monsterHP-=30; $('[data-spell-bolt]').classList.add('cast'); setTimeout(()=>$('[data-spell-bolt]').classList.remove('cast'),500); add({coins:4,xp:10}); show($('[data-tower-feedback]'),'Spell hit! Monster took damage.','good'); beep('good'); if(monsterHP<=0){floor++; if(floor>5){add({gems:2,badge:'tower'}); confetti('TOWER CLEARED'); show($('[data-tower-feedback]'),'Tower cleared! +2 gems and a badge.','good'); $('[data-tower-options]').innerHTML=''; return;} monsterHP=100; show($('[data-tower-feedback]'),'Floor cleared! New monster appears.','good');} towerQuestion();}else{b.classList.add('wrong'); playerHP-=18; show($('[data-tower-feedback]'),'Monster hit your shield. Hint: '+towerQ.hint,'bad'); beep('bad'); if(playerHP<=0){show($('[data-tower-feedback]'),'Shield broken. Start the tower again.','bad'); $('[data-tower-options]').innerHTML='';} } towerBars();}); towerBars();}
+  $('[data-start-tower]')?.addEventListener('click',()=>{floor=1;playerHP=100;monsterHP=100;towerQuestion();});
+  $$('[data-tower-power]').forEach(b=>b.addEventListener('click',()=>{const s=load(); if(b.dataset.towerPower==='shield'){if(s.coins<20)return show($('[data-tower-feedback]'),'Need 20 coins for Shield Boost.','bad'); s.coins-=20; playerHP=Math.min(100,playerHP+35); save(s); towerBars(); show($('[data-tower-feedback]'),'Shield boosted.','good');} if(b.dataset.towerPower==='blast'){if(s.gems<1)return show($('[data-tower-feedback]'),'Need 1 gem for Mega Blast.','bad'); s.gems-=1; monsterHP-=55; save(s); towerBars(); show($('[data-tower-feedback]'),'Mega Blast fired!','good');}}));
 
-  // Race
-  let player=0, ghost=0, raceCurrent=null, raceInterval=null;
-  function updateRace(){ $('[data-player-ship]').style.left=Math.min(player,100)+'%'; $('[data-ghost-ship]').style.left=Math.min(ghost,100)+'%'; }
-  function raceQuestion(){raceCurrent=makeQuestion(Math.random()>0.5?'times':'add'); $('[data-race-question]').textContent=raceCurrent.q; showOptions($('[data-race-options]'), raceCurrent.opts, (v,b)=>{if(v===raceCurrent.ans){player+=14; $('[data-race-feedback]').textContent='Boost! Correct answer powered your ship.'; $('[data-race-feedback]').className='battle-feedback good'; if(player>=100){clearInterval(raceInterval); const s=stats(); s.races=(s.races||0)+1; s.stars=(s.stars||0)+10; save(s); $('[data-race-feedback]').textContent='You won the race! +10 stars.'; } else raceQuestion();}else{b.classList.add('wrong'); ghost+=6; $('[data-race-feedback]').textContent='Ghost boost. Hint: '+raceCurrent.hint; $('[data-race-feedback]').className='battle-feedback bad';} updateRace();});}
-  $('[data-start-race]')?.addEventListener('click',()=>{clearInterval(raceInterval); player=0;ghost=0;updateRace();raceQuestion(); raceInterval=setInterval(()=>{ghost+=3; updateRace(); if(ghost>=100){clearInterval(raceInterval); $('[data-race-feedback]').textContent='The ghost won. Start again and go faster.'; $('[data-race-feedback]').className='battle-feedback bad';}},1200);});
-  $('[data-reset-race]')?.addEventListener('click',()=>{clearInterval(raceInterval);player=0;ghost=0;updateRace();$('[data-race-question]').textContent='Press start race';$('[data-race-options]').innerHTML='';});
+  // Rocket Race
+  let racePlayer=0,raceGhost=0,raceLap=1,raceQ=null,raceInt=null;
+  function raceRender(){ $('[data-racer-player]').style.left=Math.min(96,racePlayer)+'%'; $('[data-racer-ghost]').style.left=Math.min(96,raceGhost)+'%'; $('[data-race-lap]').textContent=raceLap; $('[data-race-wins]').textContent=load().raceWins||0; }
+  function raceAsk(){raceQ=makeQuestion(Math.random()>.5?'add':'times',raceLap); $('[data-race2-question]').textContent=raceQ.q; options($('[data-race2-options]'),raceQ.opts,(v,b)=>{if(v===raceQ.ans){racePlayer+=18; add({coins:3,xp:7}); show($('[data-race2-feedback]'),'Boost! Correct answer.','good'); beep('good'); if(racePlayer>=100){raceLap++; racePlayer=0; raceGhost=0; if(raceLap>3){const s=load(); s.raceWins=(s.raceWins||0)+1; s.coins=(s.coins||0)+20; s.gems=(s.gems||0)+1; s.xp=(s.xp||0)+40; s.badges={...(s.badges||{}),race:true}; save(s); clearInterval(raceInt); confetti('RACE WON'); show($('[data-race2-feedback]'),'You won the race! +20 coins +1 gem.','good'); return;} } raceAsk();}else{b.classList.add('wrong'); raceGhost+=9; show($('[data-race2-feedback]'),'Ghost boost. Hint: '+raceQ.hint,'bad'); beep('bad');} raceRender();});}
+  $('[data-start-race2]')?.addEventListener('click',()=>{clearInterval(raceInt);racePlayer=0;raceGhost=0;raceLap=1;raceRender();raceAsk();raceInt=setInterval(()=>{raceGhost+=4;raceRender(); if(raceGhost>=100){clearInterval(raceInt);show($('[data-race2-feedback]'),'The ghost won. Try again.','bad');}},1000);});
+  $('[data-race-nitro]')?.addEventListener('click',()=>{const s=load(); if(s.coins<15)return show($('[data-race2-feedback]'),'Need 15 coins for nitro.','bad'); s.coins-=15; save(s); racePlayer+=20; raceRender(); show($('[data-race2-feedback]'),'Nitro used!','good');});
 
-  // Logic
-  const logicBank=[{n:[2,3,4,5],t:17,h:'Try 5 × 3, then add or subtract the other numbers.'},{n:[6,2,3,1],t:24,h:'Try multiplying 6 by a bracket.'},{n:[8,4,2,1],t:16,h:'Can you make 4 from two small numbers, then multiply?'},{n:[9,3,2,1],t:14,h:'Try 9 + 3, then use 2 and 1.'},{n:[7,5,2,2],t:20,h:'Try building 10 first, then double it.'}];
-  let logic=logicBank[0];
-  function newLogic(){logic=logicBank[rand(0,logicBank.length-1)]; $('[data-logic-target]').textContent=logic.t; $('[data-logic-numbers]').innerHTML=logic.n.map(n=>`<span>${n}</span>`).join(''); $('[data-logic-expression]').value=''; $('[data-logic-feedback]').textContent='Use every number once. You can use +, -, ×, ÷ and brackets.'; $('[data-logic-feedback]').className='battle-feedback';}
-  $('[data-new-logic]')?.addEventListener('click',newLogic);
-  $('[data-logic-hint]')?.addEventListener('click',()=>{ $('[data-logic-feedback]').textContent=logic.h; $('[data-logic-feedback]').className='battle-feedback good';});
-  $('[data-check-logic]')?.addEventListener('click',()=>{let expr=$('[data-logic-expression]').value.replaceAll('×','*').replaceAll('÷','/'); try{const used=(expr.match(/\d+/g)||[]).map(Number).sort((a,b)=>a-b).join(','); const needed=[...logic.n].sort((a,b)=>a-b).join(','); if(used!==needed) throw new Error('Use each number shown exactly once.'); const val=safeEval(expr); if(Math.abs(val-logic.t)<1e-9){const s=stats();s.puzzles=(s.puzzles||0)+1;s.stars=(s.stars||0)+8;save(s); $('[data-logic-feedback]').textContent='Door opened! +8 stars. Nice reasoning.'; $('[data-logic-feedback]').className='battle-feedback good';} else { $('[data-logic-feedback]').textContent=`That makes ${val}, not ${logic.t}. Try another expression.`; $('[data-logic-feedback]').className='battle-feedback bad';}}catch(e){$('[data-logic-feedback]').textContent=e.message; $('[data-logic-feedback]').className='battle-feedback bad';}});
+  // Treasure Door
+  const doors=[{n:[2,3,4,5],t:17,h:'Try 5 × 3, then use 4 and 2.'},{n:[6,2,3,1],t:24,h:'Try 6 × (something). Can 2, 3, and 1 make 4?'},{n:[8,4,2,1],t:16,h:'Try making 2, then multiply by 8.'},{n:[7,5,2,2],t:20,h:'Can you make 10, then double it?'},{n:[9,3,2,1],t:14,h:'Try 9 + 3 first.'}];
+  let door=doors[0];
+  function newDoor(){door=doors[rand(0,doors.length-1)]; $('[data-door-target]').textContent=door.t; $('[data-door-numbers]').innerHTML=door.n.map(n=>`<span>${n}</span>`).join(''); $('[data-door-expression]').value=''; $('[data-door-lock]').textContent='🔒'; show($('[data-door-feedback]'),'Use the shown numbers once each. Use +, −, ×, ÷ and brackets.','');}
+  $('[data-new-door]')?.addEventListener('click',newDoor);
+  $('[data-door-hint]')?.addEventListener('click',()=>show($('[data-door-feedback]'),door.h,'good'));
+  $('[data-check-door]')?.addEventListener('click',()=>{let expr=$('[data-door-expression]').value.replaceAll('×','*').replaceAll('÷','/'); try{const used=(expr.match(/\d+/g)||[]).map(Number).sort((a,b)=>a-b).join(','); const need=[...door.n].sort((a,b)=>a-b).join(','); if(used!==need)throw new Error('Use each number exactly once.'); const val=safeEval(expr); if(Math.abs(val-door.t)<1e-9){const s=load();s.doors=(s.doors||0)+1;s.coins=(s.coins||0)+15;s.xp=(s.xp||0)+25;s.badges={...(s.badges||{}),treasure:true};save(s);$('[data-door-lock]').textContent='🔓';confetti('DOOR OPEN');show($('[data-door-feedback]'),'Treasure opened! +15 coins.','good');}else{show($('[data-door-feedback]'),`That makes ${val}, not ${door.t}. Try again.`,'bad');}}catch(e){show($('[data-door-feedback]'),e.message,'bad');}});
 
-  // Quest board
-  const quests=[
-    {id:'moon',icon:'🌙',title:'Moon Market',story:'The Moon Market needs quick addition to open the stalls.',kind:'add',target:3},
-    {id:'rocket',icon:'🚀',title:'Rocket Tables',story:'Fuel the rocket by solving times-table boosts.',kind:'times',target:3},
-    {id:'pizza',icon:'🍕',title:'Fraction Feast',story:'Aliens ordered fraction pizzas. Work out the shares.',kind:'fractions',target:3}
-  ];
-  let activeQuest=null, questProgress=0, questCurrent=null;
-  function renderQuestBoard(){const s=stats(); $('[data-quest-board]').innerHTML=quests.map(q=>{const got=(s.questStars&&s.questStars[q.id])||0; return `<button class="quest-card" data-quest="${q.id}"><span>${q.icon}</span><strong>${q.title}</strong><small>${'★'.repeat(got)}${'☆'.repeat(Math.max(0,3-got))}</small></button>`}).join(''); $$('[data-quest]').forEach(b=>b.addEventListener('click',()=>startQuest(b.dataset.quest)));}
-  function startQuest(id){activeQuest=quests.find(q=>q.id===id); questProgress=0; $('[data-quest-play]').classList.remove('hidden'); $('[data-quest-title]').textContent=activeQuest.icon+' '+activeQuest.title; $('[data-quest-story]').textContent=activeQuest.story; nextQuestQ();}
-  function nextQuestQ(){questCurrent=makeQuestion(activeQuest.kind); $('[data-quest-question]').textContent=questCurrent.q; showOptions($('[data-quest-options]'), questCurrent.opts, (v,b)=>{if(v===questCurrent.ans){questProgress++; const s=stats(); s.stars=(s.stars||0)+2; s.questStars=s.questStars||{}; s.questStars[activeQuest.id]=Math.max(s.questStars[activeQuest.id]||0, questProgress); save(s); renderQuestBoard(); if(questProgress>=activeQuest.target){$('[data-quest-feedback]').textContent='Quest complete! Stars saved on the quest board.'; $('[data-quest-feedback]').className='battle-feedback good'; $('[data-quest-options]').innerHTML='';} else {$('[data-quest-feedback]').textContent='Correct! The story moves forward.'; $('[data-quest-feedback]').className='battle-feedback good'; nextQuestQ();}} else {b.classList.add('wrong'); $('[data-quest-feedback]').textContent='Not yet. Hint: '+questCurrent.hint; $('[data-quest-feedback]').className='battle-feedback bad';}});}
+  // Pizza Fractions
+  let pizzaTarget={n:1,d:2}, shaded=0;
+  function makeTarget(){const d=[2,4,6,8,10][rand(0,4)]; pizzaTarget={d,n:rand(1,d-1)}; $('[data-pizza-target]').textContent=`${pizzaTarget.n}/${pizzaTarget.d}`; const den=$('[data-pizza-den]'); den.value=String(d); drawPizza();}
+  function gcd(a,b){while(b){[a,b]=[b,a%b]}return a}
+  function sameFrac(n1,d1,n2,d2){const g1=gcd(n1,d1),g2=gcd(n2,d2); return n1/g1===n2/g2 && d1/g1===d2/g2;}
+  function drawPizza(){const den=Number($('[data-pizza-den]').value||4); const pan=$('[data-pizza-pan]'); shaded=0; pan.innerHTML=''; pan.style.setProperty('--slices',den); for(let i=0;i<den;i++){const b=document.createElement('button'); b.className='pizza-slice'; b.textContent=i+1; b.addEventListener('click',()=>{b.classList.toggle('on'); shaded=[...pan.querySelectorAll('.pizza-slice.on')].length;}); pan.appendChild(b);} }
+  $('[data-pizza-den]')?.addEventListener('change',drawPizza);
+  $('[data-reset-pizza]')?.addEventListener('click',drawPizza);
+  $('[data-check-pizza]')?.addEventListener('click',()=>{const den=Number($('[data-pizza-den]').value||4); if(sameFrac(shaded,den,pizzaTarget.n,pizzaTarget.d)){const s=load();s.pizzaOrders=(s.pizzaOrders||0)+1;s.pizzaTips=(s.pizzaTips||0)+5;s.coins=(s.coins||0)+8;s.xp=(s.xp||0)+15;s.badges={...(s.badges||{}),pizza:true};save(s);confetti('ORDER SERVED');show($('[data-pizza-feedback]'),`Correct! ${shaded}/${den} is the same as ${pizzaTarget.n}/${pizzaTarget.d}. +8 coins`,'good'); makeTarget();}else{show($('[data-pizza-feedback]'),`Not yet. You made ${shaded}/${den}. Try matching ${pizzaTarget.n}/${pizzaTarget.d}.`,'bad');}});
 
-  renderStats(); newLogic(); renderQuestBoard(); updateRace();
+  // Boss Rush
+  let bossWave=0,bossHearts=3,bossHP=100,bossCombo=0,bossQ=null;
+  function bossRender(){ $('[data-boss-wave]').textContent=bossWave; $('[data-boss-hearts]').textContent=bossHearts; $('[data-boss-combo]').textContent=bossCombo; $('[data-boss-health]').style.width=Math.max(0,bossHP)+'%'; }
+  function bossAsk(){bossQ=makeQuestion('mixed',bossWave+2); $('[data-boss-question]').textContent=bossQ.q; options($('[data-boss-options]'),bossQ.opts,(v,b)=>{if(v===bossQ.ans){bossCombo++; bossHP-=25; add({coins:5,xp:12,streak:bossCombo}); show($('[data-boss-feedback]'),'Combo hit! Boss damaged.','good'); beep('good'); if(bossHP<=0){bossWave++; if(bossWave>=5){add({gems:3,coins:40,badge:'boss'}); confetti('BOSS DEFEATED'); show($('[data-boss-feedback]'),'Boss defeated! +3 gems +40 coins.','good'); $('[data-boss-options]').innerHTML=''; bossRender(); return;} bossHP=100; show($('[data-boss-feedback]'),'Next wave!','good');} bossAsk();}else{b.classList.add('wrong'); bossHearts--; bossCombo=0; show($('[data-boss-feedback]'),'Boss counterattack! Hint: '+bossQ.hint,'bad'); beep('bad'); if(bossHearts<=0){show($('[data-boss-feedback]'),'Boss rush failed. Try again.','bad'); $('[data-boss-options]').innerHTML='';} } bossRender();}); bossRender();}
+  $('[data-start-boss]')?.addEventListener('click',()=>{bossWave=0;bossHearts=3;bossHP=100;bossCombo=0;bossAsk();});
+  $('[data-boss-skip]')?.addEventListener('click',()=>{if(bossQ)show($('[data-boss-feedback]'),bossQ.hint,'good');});
+
+  render(); newDoor(); makeTarget(); towerBars(); raceRender(); bossRender(); astRender();
 })();

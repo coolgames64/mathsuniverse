@@ -1,0 +1,14 @@
+Maths Universe Arcade 2.0 upgrade
+
+This update makes the Games Hub feel more like actual games, while keeping all existing pages.
+
+Added/changed:
+- Asteroid Blaster with moving answer asteroids, hearts, timer, score and rewards.
+- Monster Tower with enemies, player shield, monster HP, floor progression and power-ups.
+- Rocket Race with player rocket, ghost racer, laps and nitro.
+- Treasure Door puzzle with target-number logic.
+- Pizza Fractions visual tapping game.
+- Boss Rush with waves, hearts, combo and boss HP.
+- Avatar picker, daily chest, XP bar, coins, gems, stars and badge case.
+
+All progress saves in the browser using localStorage.
