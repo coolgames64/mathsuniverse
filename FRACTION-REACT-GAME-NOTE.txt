@@ -1,0 +1,1 @@
+Added the uploaded React JSX fraction mini game as fraction-react-game.html. It uses React, ReactDOM and Babel from CDN so it can run on GitHub Pages. The original JSX was converted into fraction-game-react.jsx. Upload all files to GitHub.

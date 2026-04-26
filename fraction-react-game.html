@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pizza Fraction Mini Game | Maths Universe</title>
+  <meta name="description" content="A fun React fraction mini game for learning fractions with pizza, colouring, comparing and adding.">
+  <link rel="icon" href="favicon.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header"><div class="container nav-bar"><a class="brand" href="index.html"><img src="logo-final.png" alt="Maths Universe logo"><span class="brand-text"><span>Maths Universe</span><small>Fraction Mini Game</small></span></a><button class="nav-toggle" data-nav-toggle>Menu</button><nav class="nav-links" data-nav-links><a href="index.html">Home</a><a href="game-arena.html">Game Arena</a><a href="games-hub.html">Games Hub</a><a href="fractions-adventure.html">Fraction Adventure</a><a href="fraction-react-game.html" class="active">Pizza Game</a><a href="interactive-lab.html">Interactive Lab</a><a href="premium.html">Premium</a><a href="mission-control.html">Mission Control</a><a href="worksheet-hub.html">Worksheets</a><a href="teacher.html">Teacher Portal</a></nav><div class="progress-chip"><span data-progress-text>0/14 missions completed</span></div><div data-teacher-status class="teacher-status off">Student mode</div></div></header>
+<div class="mode-banner hidden" data-teacher-banner><div class="container"><span>Teacher mode active for <strong data-teacher-name>Teacher</strong>. Student locks are bypassed on this browser.</span><a href="teacher.html">Open Teacher Portal</a></div></div>
+<main id="main">
+  <section class="container page-hero">
+    <div class="breadcrumb"><a href="index.html">Home</a><a href="games-hub.html">Games Hub</a><a href="fractions-adventure.html">Fraction Adventure</a><span>/</span><span>Pizza Fraction Mini Game</span></div>
+    <div class="topic-meta"><span class="badge">Fractions</span><span class="badge">Ages 7+</span><span class="badge">Mini game</span></div>
+    <h1>Pizza Fraction Mini Game</h1>
+    <p class="lead">This is the React fraction game you uploaded, converted into a website page. It helps children name fractions, colour fractions, compare fractions and add simple fractions.</p>
+    <div class="hero-actions"><a class="btn game-btn" href="fractions-adventure.html">🍕 Full Fraction Adventure</a><a class="btn secondary" href="fractions.html">Fractions Lesson</a><a class="btn secondary" href="fractions-worksheet-pack.html">Worksheets</a></div>
+  </section>
+  <section class="container section">
+    <div class="card pad fraction-react-shell">
+      <div id="fraction-game-root"><p>Loading the fraction game...</p></div>
+    </div>
+  </section>
+</main>
+<footer class="footer"><div class="container footer-grid"><div><strong>Maths Universe</strong><br><span>Interactive fraction games, lessons and worksheets.</span></div><div class="footer-links"><a href="games-hub.html">Games Hub</a><a href="fractions-adventure.html">Fraction Adventure</a><a href="worksheet-hub.html">Worksheets</a></div></div></footer>
+<script src="app.js"></script>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel" src="fraction-game-react.jsx"></script>
+</body>
+</html>

@@ -287,3 +287,8 @@ a{color:inherit}.container{width:min(1120px,calc(100% - 32px));margin:auto}.skip
 .fraction-callout-card{display:grid;grid-template-columns:1.3fr .7fr;gap:1rem;align-items:center;background:linear-gradient(135deg,rgba(93,220,255,.12),rgba(139,92,246,.14));overflow:hidden}
 .fraction-callout-icons{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem;text-align:center}.fraction-callout-icons span{font-size:3rem;padding:1rem;border-radius:22px;background:rgba(255,255,255,.08);animation:floaty 3.5s infinite}.fraction-callout-icons span:nth-child(2){animation-delay:.4s}.fraction-callout-icons span:nth-child(3){animation-delay:.8s}.fraction-callout-icons span:nth-child(4){animation-delay:1.2s}
 @media(max-width:800px){.fraction-callout-card{grid-template-columns:1fr}.fraction-callout-icons span{font-size:2.4rem}}
+
+
+/* Uploaded React fraction mini game wrapper */
+.fraction-react-shell{background:linear-gradient(180deg, rgba(255,248,240,.98), rgba(255,236,210,.96)); overflow:hidden}
+.fraction-react-shell #fraction-game-root{min-height:520px}
