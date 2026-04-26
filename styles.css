@@ -58,3 +58,16 @@ a{color:inherit}.container{width:min(1120px,calc(100% - 32px));margin:auto}.skip
 .diagram-card{display:grid;gap:1rem}
 .diagram-image{width:100%;height:auto;display:block;border-radius:18px;border:1px solid rgba(255,255,255,.12);box-shadow:0 18px 45px rgba(0,0,0,.18);background:#0f173a}
 .lesson-card .diagram-image{margin-top:1rem}
+
+
+/* Homepage mode chooser */
+.mode-choice-top{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;margin:1.2rem 0 1rem}
+.mode-choice-card{display:flex;flex-direction:column;gap:.45rem;padding:1rem 1.1rem;border-radius:20px;text-decoration:none;border:1px solid rgba(255,255,255,.14);box-shadow:0 14px 35px rgba(0,0,0,.18);transition:transform .2s ease, box-shadow .2s ease}
+.mode-choice-card:hover{transform:translateY(-2px);box-shadow:0 18px 40px rgba(0,0,0,.22)}
+.mode-choice-card.normal{background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(110,180,255,.12))}
+.mode-choice-card.game{background:linear-gradient(180deg, rgba(152,91,255,.22), rgba(35,16,94,.4))}
+.mode-choice-card strong{font-size:1.18rem}
+.mode-choice-card small{color:var(--muted,#cfd8ff);line-height:1.45}
+.mode-tag{display:inline-flex;align-self:flex-start;padding:.3rem .7rem;border-radius:999px;background:rgba(255,255,255,.14);font-weight:700;font-size:.85rem}
+.big-mode-btn{font-size:1.05rem;padding:.95rem 1.2rem}
+@media (max-width: 800px){.mode-choice-top{grid-template-columns:1fr}}
