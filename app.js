@@ -55,10 +55,45 @@ function initTeacherPortal(){
   function show(text,type='good'){
     if(msg){msg.className='auth-message '+type;msg.textContent=text;msg.classList.remove('hidden')}
   }
-  function makeCode(){
+  const LAST_CODE_KEY='mathsUniverseLastTeacherCodeV1';
+  function randomSixDigitCode(){
     const arr=new Uint32Array(1);
-    if(window.crypto&&crypto.getRandomValues){crypto.getRandomValues(arr);return String(100000+(arr[0]%900000));}
+    if(window.crypto&&crypto.getRandomValues){
+      crypto.getRandomValues(arr);
+      return String(100000+(arr[0]%900000));
+    }
     return String(Math.floor(100000+Math.random()*900000));
+  }
+  function makeCode(){
+    const last=localStorage.getItem(LAST_CODE_KEY);
+    let code=randomSixDigitCode();
+    for(let i=0;i<20 && code===last;i++){code=randomSixDigitCode();}
+    localStorage.setItem(LAST_CODE_KEY,code);
+    return code;
+  }
+  async function sendCodeEmail(name,email,code){
+    const cfg=window.MATHS_UNIVERSE_EMAILJS||{};
+    if(cfg.enabled && window.emailjs && cfg.publicKey && cfg.serviceId && cfg.templateId && !String(cfg.publicKey).includes('YOUR_')){
+      emailjs.init({publicKey:cfg.publicKey});
+      await emailjs.send(cfg.serviceId,cfg.templateId,{
+        teacher_name:name,
+        teacher_email:email,
+        adult_name:name,
+        adult_email:email,
+        to_email:email,
+        email:email,
+        code:code,
+        verification_code:code
+      });
+      return 'emailjs';
+    }
+    const endpoint=window.MATHS_UNIVERSE_EMAIL_ENDPOINT||'';
+    if(endpoint){
+      const res=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,code})});
+      if(!res.ok)throw new Error('Email service did not accept the message.');
+      return 'endpoint';
+    }
+    return 'demo';
   }
   function savePending(data){localStorage.setItem(PENDING_KEY,JSON.stringify(data))}
   function getPending(){try{return JSON.parse(localStorage.getItem(PENDING_KEY))||null}catch(e){return null}}
@@ -103,20 +138,19 @@ function initTeacherPortal(){
     savePending({name,email,code,expires:Date.now()+10*60*1000});
     if(verifyBox)verifyBox.classList.remove('hidden');
 
-    const endpoint=window.MATHS_UNIVERSE_EMAIL_ENDPOINT||'';
     const btn=requestForm.querySelector('button[type="submit"]');
     if(btn)btn.disabled=true;
     try{
-      if(endpoint){
-        const res=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,code})});
-        if(!res.ok)throw new Error('Email service did not accept the message.');
-        show('A 6-digit verification code was sent to '+email+'.');
+      const mode=await sendCodeEmail(name,email,code);
+      if(mode==='emailjs' || mode==='endpoint'){
+        show('A NEW 6-digit verification code was sent to '+email+'. Only the newest code will work.');
       }else{
-        show('Login page added. Demo code: '+code+' . Real email sending needs an email service/server connected to GitHub Pages.');
+        show('New demo code: '+code+' . Every time you press send, a different code is created. To really email it, add your EmailJS IDs in emailjs-config.js and set enabled to true.');
       }
       const codeInput=portal.querySelector('[name="code"]'); if(codeInput)codeInput.focus();
     }catch(err){
-      show('Could not send the email code yet. The site needs an email service/server. Demo code: '+code,'bad');
+      console.error(err);
+      show('Could not send the email code yet. New demo code: '+code+' . Check your EmailJS settings.','bad');
     }finally{if(btn)btn.disabled=false; render();}
   });
 

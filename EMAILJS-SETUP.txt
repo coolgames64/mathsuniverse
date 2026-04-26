@@ -1,0 +1,29 @@
+Maths Universe EmailJS Setup
+
+The teacher/adult verification code is already generated fresh every time the Send/Create code button is pressed.
+Only the newest code is accepted. Older codes are replaced and expire after 10 minutes.
+
+To make the code actually send by email:
+1. Create an EmailJS account.
+2. Add an email service.
+3. Create an email template.
+4. In the template, use variables such as:
+   {{teacher_name}}
+   {{teacher_email}}
+   {{code}}
+
+Recommended template:
+Subject: Your Maths Universe verification code
+Message:
+Hello {{teacher_name}},
+
+Your Maths Universe verification code is: {{code}}
+
+This code expires after 10 minutes.
+
+5. Open emailjs-config.js.
+6. Replace YOUR_PUBLIC_KEY, YOUR_SERVICE_ID, and YOUR_TEMPLATE_ID.
+7. Change enabled from false to true.
+8. Upload emailjs-config.js, app.js, teacher.html, and adult-check.html to GitHub.
+
+Important: Do not put any private email password in the website files.
