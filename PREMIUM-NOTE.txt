@@ -1,0 +1,15 @@
+MATHS UNIVERSE PREMIUM FEATURES
+
+This ZIP adds a new premium.html page and premium.js.
+
+Demo unlock code: MATHS-STAR
+
+Premium features included:
+- Smart Hint Lab
+- Worksheet Generator
+- Parent Snapshot
+- Mega Boss Battle
+- Premium homepage callout
+- Premium nav link
+
+Important: this is a front-end GitHub Pages demo. It is not secure for real paid subscriptions because any front-end code can be inspected. For real premium payments, use Stripe plus a secure backend/member service.

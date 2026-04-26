@@ -15,7 +15,7 @@
     <a class="brand" href="index.html"><img src="logo-final.png" alt="Maths Universe logo"><span class="brand-text"><span>Maths Universe</span><small>Unlock Quiz Edition</small></span></a>
     <button class="nav-toggle" data-nav-toggle>Menu</button>
     <nav class="nav-links" data-nav-links>
-      <a href="index.html">Home</a><a href="game-arena.html">Game Arena</a>
+      <a href="index.html">Home</a><a href="game-arena.html">Game Arena</a><a href="premium.html">Premium</a>
       <a href="mission-control.html">Mission Control</a>
       <a href="worksheet-hub.html">Worksheets</a>
       <a href="teacher.html">Teacher Portal</a>
@@ -34,7 +34,7 @@
 </div>
 <main id="main" data-quiz-main>
   <section class="container page-hero">
-    <div class="breadcrumb"><a href="index.html">Home</a><a href="game-arena.html">Game Arena</a><span>/</span><span>Quiz</span></div>
+    <div class="breadcrumb"><a href="index.html">Home</a><a href="game-arena.html">Game Arena</a><a href="premium.html">Premium</a><span>/</span><span>Quiz</span></div>
     <h1>Loading quiz...</h1>
   </section>
 </main>
@@ -135,7 +135,7 @@ function muRenderQuiz() {
   ).join('');
   main.innerHTML = `
     <section class="container page-hero">
-      <div class="breadcrumb"><a href="index.html">Home</a><a href="game-arena.html">Game Arena</a><span>/</span><a href="${item.file}">${muEsc(item.title)}</a><span>/</span><span>Question ${q}</span></div>
+      <div class="breadcrumb"><a href="index.html">Home</a><a href="game-arena.html">Game Arena</a><a href="premium.html">Premium</a><span>/</span><a href="${item.file}">${muEsc(item.title)}</a><span>/</span><span>Question ${q}</span></div>
       <h1>${muEsc(item.title)} Quiz</h1>
       <p class="lead">Boss question ${q} of 10. Correct answers earn XP, coins, and unlock the next level.</p>
     </section>
