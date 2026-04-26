@@ -41,13 +41,117 @@ function initVault(){const root=document.querySelector('[data-formula-vault]');i
 function initCertificate(){const cert=document.querySelector('[data-certificate-content]'); if(!cert)return; const teacher=isTeacherLoggedIn(); if(!teacher && getState().completed.length<COURSE.length){cert.innerHTML='<div class="locked-screen card"><div class="lock-mark">L</div><h1>Certificate locked</h1><p>Complete every 10-question unlock quiz to open the certificate.</p><a class="btn" href="index.html#unlock-map">Return to course map</a></div>'; return;} const input=document.querySelector('[data-certificate-name-input]'); const nameEls=document.querySelectorAll('[data-certificate-name]'); const dateEls=document.querySelectorAll('[data-certificate-date]'); const modeEls=document.querySelectorAll('[data-certificate-mode]'); const saved=localStorage.getItem(CERT_NAME_KEY)||'Learner Name'; function renderName(v){nameEls.forEach(el=>el.textContent=v||'Learner Name')} if(input){input.value=saved==='Learner Name'?'':saved; input.addEventListener('input',()=>{const v=input.value.trim()||'Learner Name'; localStorage.setItem(CERT_NAME_KEY,v); renderName(v);})} renderName(saved); const d=new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'}); dateEls.forEach(el=>el.textContent=d); modeEls.forEach(el=>el.textContent=teacher?'Teacher preview certificate':'Verified completion certificate'); const list=document.querySelector('[data-certificate-missions]'); if(list){list.innerHTML=COURSE.map((t,i)=>'<li><span>'+(i+1)+'</span>'+escapeHtml(t.title)+'</li>').join('');}}
 function initWorksheetSearch(){const input=document.querySelector('[data-worksheet-search]'); if(!input)return; const cards=[...document.querySelectorAll('[data-worksheet-card]')]; input.addEventListener('input',()=>{const q=input.value.toLowerCase(); cards.forEach(c=>c.style.display=c.textContent.toLowerCase().includes(q)?'':'none')});}
 
-function initTeacherPortal(){const portal=document.querySelector('[data-teacher-portal]'); if(!portal)return; const requestBox=portal.querySelector('[data-request-box]'); const verifyBox=portal.querySelector('[data-verify-box]'); const loginBox=portal.querySelector('[data-login-box]'); const dashEls=portal.querySelectorAll('[data-teacher-dashboard]'); const msg=portal.querySelector('[data-auth-message]'); let pendingEmail=''; let pendingName=''; const show=(text,type='good')=>{if(msg){msg.className='auth-message '+type;msg.textContent=text;msg.classList.remove('hidden')}}; function render(){const acc=getTeacherAccount(); const logged=isTeacherLoggedIn(); if(requestBox)requestBox.classList.toggle('hidden',logged); if(verifyBox)verifyBox.classList.add('hidden'); if(loginBox)loginBox.classList.toggle('hidden',!acc||logged); dashEls.forEach(d=>d.classList.toggle('hidden',!logged)); const nameEl=portal.querySelector('[data-dashboard-name]'); if(nameEl&&acc)nameEl.textContent=acc.name||'Teacher'; const emailEl=portal.querySelector('[data-dashboard-email]'); if(emailEl&&acc)emailEl.textContent=acc.email?('('+acc.email+')'):''; const table=portal.querySelector('[data-teacher-course-table]'); if(table){table.innerHTML=COURSE.map((t,i)=>'<tr><td>'+(i+1)+'</td><td><strong>'+escapeHtml(t.title)+'</strong><br><span class="small">'+escapeHtml(t.target)+'</span></td><td><a href="'+t.file+'">Lesson</a></td><td><a href="quiz.html?topic='+t.slug+'&q=1">Quiz Q1</a></td><td>'+(t.slug==='start-here'?'Course intro':('<a href="'+t.slug+'-worksheet.html">Worksheet</a>'))+'</td></tr>').join('');} updateUI();}
-  const requestForm=portal.querySelector('[data-request-code]'); if(requestForm)requestForm.addEventListener('submit',async e=>{e.preventDefault(); const fd=new FormData(requestForm); const name=(fd.get('name')||'').toString().trim(); const email=(fd.get('email')||'').toString().trim().toLowerCase(); if(name.length<2)return show('Please enter a teacher name.','bad'); if(!email)return show('Teacher email is required.','bad'); if(!isProbablyEmail(email))return show('Invalid email. Please enter a real teacher email address.','bad'); const btn=requestForm.querySelector('button[type="submit"]'); if(btn)btn.disabled=true; try{const res=await fetch(API_BASE+'/api/request-teacher-code',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email})}); const data=await res.json().catch(()=>({})); if(!res.ok)throw new Error(data.error||'Could not send the confirmation code.'); pendingEmail=email; pendingName=name; if(verifyBox)verifyBox.classList.remove('hidden'); show('Confirmation code sent to '+email+'. Enter the code to unlock Teacher Mode.'); const codeInput=portal.querySelector('[name="code"]'); if(codeInput)codeInput.focus();}catch(err){show(String(err.message||'').includes('fetch')?'Email verification server is not running. Start the included server, then try again.':err.message,'bad');}finally{if(btn)btn.disabled=false;}});
-  const verifyForm=portal.querySelector('[data-verify-code]'); if(verifyForm)verifyForm.addEventListener('submit',async e=>{e.preventDefault(); const code=(new FormData(verifyForm).get('code')||'').toString().trim(); if(!/^\d{6}$/.test(code))return show('Enter the 6-digit confirmation code.','bad'); const btn=verifyForm.querySelector('button[type="submit"]'); if(btn)btn.disabled=true; try{const res=await fetch(API_BASE+'/api/verify-teacher-code',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:pendingEmail,code})}); const data=await res.json().catch(()=>({})); if(!res.ok)throw new Error(data.error||'Code not accepted.'); saveTeacherAccount({name:pendingName,email:pendingEmail,verified:true,verifiedAt:new Date().toISOString(),serverVerified:!!data.verified}); setTeacherSession(true); verifyForm.reset(); show('Email verified. Teacher Mode is now unlocked on this browser.'); render();}catch(err){show(err.message,'bad');}finally{if(btn)btn.disabled=false;}});
-  const loginForm=portal.querySelector('[data-login-teacher]'); if(loginForm)loginForm.addEventListener('submit',e=>{e.preventDefault(); const acc=getTeacherAccount(); if(!acc||!acc.email)return show('No verified teacher account is saved on this browser. Request a new email code.','bad'); pendingEmail=acc.email; pendingName=acc.name; if(verifyBox)verifyBox.classList.remove('hidden'); show('For safety, request a fresh confirmation code for '+acc.email+' using the form above.','bad');});
-  portal.querySelectorAll('[data-teacher-logout]').forEach(b=>b.addEventListener('click',()=>{setTeacherSession(false); show('Teacher mode is off. Student locks are active again.'); render();}));
+function initTeacherPortal(){
+  const portal=document.querySelector('[data-teacher-portal]');
+  if(!portal)return;
+
+  const requestBox=portal.querySelector('[data-request-box]');
+  const verifyBox=portal.querySelector('[data-verify-box]');
+  const loginBox=portal.querySelector('[data-login-box]');
+  const dashEls=portal.querySelectorAll('[data-teacher-dashboard]');
+  const msg=portal.querySelector('[data-auth-message]');
+  const PENDING_KEY='mathsUniversePendingTeacherCodeV1';
+
+  function show(text,type='good'){
+    if(msg){msg.className='auth-message '+type;msg.textContent=text;msg.classList.remove('hidden')}
+  }
+  function makeCode(){
+    const arr=new Uint32Array(1);
+    if(window.crypto&&crypto.getRandomValues){crypto.getRandomValues(arr);return String(100000+(arr[0]%900000));}
+    return String(Math.floor(100000+Math.random()*900000));
+  }
+  function savePending(data){localStorage.setItem(PENDING_KEY,JSON.stringify(data))}
+  function getPending(){try{return JSON.parse(localStorage.getItem(PENDING_KEY))||null}catch(e){return null}}
+  function clearPending(){localStorage.removeItem(PENDING_KEY)}
+  function isFakeTeacherEmail(email){
+    email=String(email||'').trim().toLowerCase();
+    if(!isProbablyEmail(email))return true;
+    const parts=email.split('@');
+    const local=parts[0]||''; const domain=parts[1]||'';
+    const blockedDomains=['example.com','example.co.uk','test.com','fake.com','invalid.com','email.com','mail.com','school.com.fake','mailinator.com','10minutemail.com','tempmail.com','yopmail.com','guerrillamail.com'];
+    if(blockedDomains.includes(domain))return true;
+    if(domain.endsWith('.invalid'))return true;
+    if(/^(fake|test|none|noemail|email|abc|asdf|qwerty|teacher)$/.test(local))return true;
+    if(domain.includes('fake')||domain.includes('invalid')||domain.includes('tempmail'))return true;
+    return false;
+  }
+  function render(){
+    const acc=getTeacherAccount();
+    const logged=isTeacherLoggedIn();
+    const pending=getPending();
+    if(requestBox)requestBox.classList.toggle('hidden',logged);
+    if(verifyBox)verifyBox.classList.toggle('hidden',logged || !pending);
+    if(loginBox)loginBox.classList.toggle('hidden',!acc||logged);
+    dashEls.forEach(d=>d.classList.toggle('hidden',!logged));
+    const nameEl=portal.querySelector('[data-dashboard-name]'); if(nameEl&&acc)nameEl.textContent=acc.name||'Teacher';
+    const emailEl=portal.querySelector('[data-dashboard-email]'); if(emailEl&&acc)emailEl.textContent=acc.email?('('+acc.email+')'):'';
+    const table=portal.querySelector('[data-teacher-course-table]');
+    if(table){table.innerHTML=COURSE.map((t,i)=>'<tr><td>'+(i+1)+'</td><td><strong>'+escapeHtml(t.title)+'</strong><br><span class="small">'+escapeHtml(t.target)+'</span></td><td><a href="'+t.file+'">Lesson</a></td><td><a href="quiz.html?topic='+t.slug+'&q=1">Quiz Q1</a></td><td>'+(t.slug==='start-here'?'Course intro':('<a href="'+t.slug+'-worksheet.html">Worksheet</a>'))+'</td></tr>').join('');}
+    updateUI();
+  }
+
+  const requestForm=portal.querySelector('[data-request-code]');
+  if(requestForm)requestForm.addEventListener('submit',async e=>{
+    e.preventDefault();
+    const fd=new FormData(requestForm);
+    const name=(fd.get('name')||'').toString().trim();
+    const email=(fd.get('email')||'').toString().trim().toLowerCase();
+    if(name.length<2)return show('Please enter a teacher name.','bad');
+    if(isFakeTeacherEmail(email))return show('Invalid email. Please enter a real teacher email address.','bad');
+
+    const code=makeCode();
+    savePending({name,email,code,expires:Date.now()+10*60*1000});
+    if(verifyBox)verifyBox.classList.remove('hidden');
+
+    const endpoint=window.MATHS_UNIVERSE_EMAIL_ENDPOINT||'';
+    const btn=requestForm.querySelector('button[type="submit"]');
+    if(btn)btn.disabled=true;
+    try{
+      if(endpoint){
+        const res=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,code})});
+        if(!res.ok)throw new Error('Email service did not accept the message.');
+        show('A 6-digit verification code was sent to '+email+'.');
+      }else{
+        show('Login page added. Demo code: '+code+' . Real email sending needs an email service/server connected to GitHub Pages.');
+      }
+      const codeInput=portal.querySelector('[name="code"]'); if(codeInput)codeInput.focus();
+    }catch(err){
+      show('Could not send the email code yet. The site needs an email service/server. Demo code: '+code,'bad');
+    }finally{if(btn)btn.disabled=false; render();}
+  });
+
+  const verifyForm=portal.querySelector('[data-verify-code]');
+  if(verifyForm)verifyForm.addEventListener('submit',e=>{
+    e.preventDefault();
+    const code=(new FormData(verifyForm).get('code')||'').toString().trim();
+    if(!/^\d{6}$/.test(code))return show('Enter the 6-digit confirmation code.','bad');
+    const pending=getPending();
+    if(!pending)return show('No code has been requested yet. Please send a code first.','bad');
+    if(Date.now()>pending.expires){clearPending();render();return show('That code expired. Please request a new one.','bad');}
+    if(code!==String(pending.code))return show('That code is not correct. Please try again.','bad');
+    saveTeacherAccount({name:pending.name,email:pending.email,verified:true,verifiedAt:new Date().toISOString()});
+    setTeacherSession(true);
+    clearPending();
+    verifyForm.reset();
+    show('Email verified. Teacher Mode is now unlocked on this browser.');
+    render();
+  });
+
+  const loginForm=portal.querySelector('[data-login-teacher]');
+  if(loginForm)loginForm.addEventListener('submit',e=>{
+    e.preventDefault();
+    const acc=getTeacherAccount();
+    if(!acc||!acc.verified)return show('No verified teacher account is saved on this browser. Request a new code.','bad');
+    setTeacherSession(true);
+    show('Teacher Mode is open again.');
+    render();
+  });
+
+  portal.querySelectorAll('[data-teacher-logout]').forEach(b=>b.addEventListener('click',()=>{setTeacherSession(false); show('Teacher Mode is off. Student locks are active again.'); render();}));
   portal.querySelectorAll('[data-teacher-unlock-all]').forEach(b=>b.addEventListener('click',()=>{teacherUnlockAllProgress(); show('All missions and quiz questions are marked complete on this browser.'); render();}));
   portal.querySelectorAll('[data-teacher-clear-progress]').forEach(b=>b.addEventListener('click',()=>{if(confirm('Clear student progress on this browser? The verified teacher account will remain.')){teacherClearStudentProgressOnly(); show('Student progress cleared. Teacher account remains.'); render();}}));
-  portal.querySelectorAll('[data-delete-teacher-account]').forEach(b=>b.addEventListener('click',()=>{if(confirm('Delete the verified teacher account from this browser?')){localStorage.removeItem(TEACHER_ACCOUNT_KEY);localStorage.removeItem(TEACHER_SESSION_KEY);teacherClearStudentProgressOnly(); show('Verified teacher account deleted from this browser.','good'); render();}})); render();}
+  portal.querySelectorAll('[data-delete-teacher-account]').forEach(b=>b.addEventListener('click',()=>{if(confirm('Delete the verified teacher account from this browser?')){localStorage.removeItem(TEACHER_ACCOUNT_KEY);localStorage.removeItem(TEACHER_SESSION_KEY);clearPending();teacherClearStudentProgressOnly(); show('Verified teacher account deleted from this browser.','good'); render();}}));
+  render();
+}
 
 document.addEventListener('DOMContentLoaded',()=>{initNav();lockLesson();initQuestionPage();initReset();initPlanner();initVault();initSupportLocks();initCertificate();initWorksheetSearch();initTeacherPortal();updateUI();});

@@ -1,0 +1,20 @@
+Maths Universe teacher login note
+
+This version adds a Teacher Login section to teacher.html:
+- Teacher name field
+- Teacher email field
+- 6-digit verification code field
+- Invalid/fake-looking email warning
+- Teacher dashboard after verification
+
+Important:
+GitHub Pages is a static website host. It can show pages, CSS, JavaScript and images, but it cannot secretly send emails by itself.
+
+So this ZIP includes a working demo-code version. It checks the email format and fake-looking emails, generates a 6-digit code, and asks the user to type that code. To make the code really send to the teacher email, connect an email service/server and set:
+
+window.MATHS_UNIVERSE_EMAIL_ENDPOINT = "https://your-email-service-url";
+
+That endpoint should accept JSON like:
+{"name":"Teacher Name","email":"teacher@school.com","code":"123456"}
+
+Then it should send the code by email.
