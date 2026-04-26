@@ -1,0 +1,14 @@
+Maths Universe Fraction Planet Adventure
+
+Added files:
+- fractions-adventure.html
+- fractions-adventure.js
+
+What it adds:
+- Pizza Builder: click slices to make fractions.
+- Fraction Match: match fraction pictures to numbers.
+- Rocket Compare: compare fraction sizes visually.
+- Feed the Monster: add same-denominator fractions by combining energy foods.
+- Fraction Dragon: mixed boss battle.
+
+This update does not remove Normal Mode, Game Arena, Games Hub, Premium, Interactive Lab, worksheets, teacher tools, or existing pages.

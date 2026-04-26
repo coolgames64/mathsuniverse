@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fraction Planet Adventure | Maths Universe</title>
+  <meta name="description" content="A playful fraction adventure game for young learners: pizza fractions, matching, rocket comparing, monster feeding, and a final boss.">
+  <link rel="icon" href="favicon.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="container nav-bar">
+    <a class="brand" href="index.html"><img src="logo.svg" alt="Maths Universe logo"><span class="brand-text"><span>Maths Universe</span><small>Fraction Planet</small></span></a>
+    <button class="nav-toggle" data-nav-toggle>Menu</button>
+    <nav class="nav-links" data-nav-links>
+      <a href="index.html">Home</a>
+      <a href="game-arena.html">Game Arena</a>
+      <a href="games-hub.html">Games Hub</a>
+      <a href="fractions-adventure.html" class="active">Fraction Adventure</a>
+      <a href="interactive-lab.html">Interactive Lab</a>
+      <a href="premium.html">Premium</a>
+      <a href="mission-control.html">Mission Control</a>
+      <a href="worksheet-hub.html">Worksheets</a>
+      <a href="teacher.html">Teacher Portal</a>
+      <a href="formula-vault.html">Formula Vault</a>
+      <a href="mistake-library.html">Mistake Library</a>
+    </nav>
+    <div class="progress-chip"><span data-progress-text>0/14 missions completed</span></div>
+    <div data-teacher-status class="teacher-status off">Student mode</div>
+  </div>
+</header>
+
+<main id="main" class="fraction-adventure-page">
+  <section class="fraction-hero">
+    <div class="container fraction-hero-grid">
+      <div>
+        <div class="eyebrow">Made for 7-year-old fraction learners</div>
+        <h1>Fraction Planet Adventure</h1>
+        <p class="lead">Click pizzas, match fraction pictures, race rockets, feed the monster, and beat the Fraction Dragon. Children learn what fractions mean before they calculate them.</p>
+        <div class="fraction-player-card">
+          <div class="fraction-avatar" data-fa-avatar>🚀</div>
+          <div>
+            <strong data-fa-rank>Rookie Explorer</strong>
+            <div class="fraction-progress-line"><span data-fa-xpbar></span></div>
+            <small><span data-fa-xp>0</span> XP · <span data-fa-stars>0</span> stars · <span data-fa-coins>0</span> coins</small>
+          </div>
+        </div>
+        <div class="hero-actions">
+          <button class="btn game-btn" data-fa-start>Start Adventure</button>
+          <button class="btn secondary" data-fa-sound>Sound: On</button>
+          <button class="btn secondary" data-fa-reset>Reset Fraction Progress</button>
+        </div>
+      </div>
+      <div class="fraction-world-card card">
+        <div class="planet-orbit">
+          <span class="planet big">🍕</span>
+          <span class="planet p1">👾</span>
+          <span class="planet p2">🚀</span>
+          <span class="planet p3">🐉</span>
+        </div>
+        <h2>5 mini-games, one mission</h2>
+        <p>Understand first. Calculate second. Win by learning.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="container section">
+    <div class="fraction-map" data-fa-map>
+      <button class="fraction-level active" data-fa-level="pizza"><span>1</span><strong>Pizza Builder</strong><small>Make fractions by clicking slices</small></button>
+      <button class="fraction-level" data-fa-level="match"><span>2</span><strong>Fraction Match</strong><small>Match pictures to numbers</small></button>
+      <button class="fraction-level" data-fa-level="rocket"><span>3</span><strong>Rocket Compare</strong><small>Choose the bigger fraction</small></button>
+      <button class="fraction-level" data-fa-level="monster"><span>4</span><strong>Feed Monster</strong><small>Add same-denominator fractions</small></button>
+      <button class="fraction-level" data-fa-level="boss"><span>5</span><strong>Fraction Dragon</strong><small>Final mixed boss</small></button>
+    </div>
+  </section>
+
+  <section class="container section">
+    <div class="fraction-game-shell">
+      <aside class="card fraction-side-panel">
+        <h2 data-fa-game-title>Pizza Builder</h2>
+        <p data-fa-game-goal>Make the fraction by clicking the pizza slices.</p>
+        <div class="fraction-stats-grid">
+          <div><strong data-fa-stage>1</strong><small>Stage</small></div>
+          <div><strong data-fa-score>0</strong><small>Score</small></div>
+          <div><strong data-fa-hearts>❤️❤️❤️</strong><small>Hearts</small></div>
+        </div>
+        <div class="fraction-hint-box" data-fa-hint>
+          The bottom number tells how many equal pieces the whole is split into.
+        </div>
+        <button class="btn secondary" data-fa-hint-button>Show Hint</button>
+        <button class="btn secondary" data-fa-next>Next Challenge</button>
+      </aside>
+
+      <section class="card fraction-play-card">
+        <div class="fraction-topline">
+          <span class="badge" data-fa-mode>Visual fractions</span>
+          <span class="badge">Question <span data-fa-question-count>1</span>/5</span>
+        </div>
+        <div class="fraction-mission-text" data-fa-prompt>Make 1/2 of the pizza.</div>
+        <div class="fraction-stage" data-fa-stage-area></div>
+        <div class="fraction-controls" data-fa-controls></div>
+        <div class="fraction-feedback" data-fa-feedback>Choose a level or press Start Adventure.</div>
+      </section>
+    </div>
+  </section>
+
+  <section class="container section">
+    <div class="grid-3">
+      <div class="card pad">
+        <h3>🍕 First: see the fraction</h3>
+        <p>Children click slices and colour parts before seeing the calculation.</p>
+      </div>
+      <div class="card pad">
+        <h3>💡 Then: fix mistakes</h3>
+        <p>Wrong answers give gentle hints like “count the coloured pieces again”.</p>
+      </div>
+      <div class="card pad">
+        <h3>🐉 Finally: boss battle</h3>
+        <p>The final dragon mixes recognising, comparing, adding, and subtracting fractions.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer"><div class="container footer-grid"><div><strong>Maths Universe</strong><br><span>Fraction games for children who learn best by playing.</span></div><div class="footer-links"><a href="fractions.html">Fractions lesson</a><a href="games-hub.html">Games Hub</a><a href="worksheet-hub.html">Worksheets</a></div></div></footer>
+<script src="app.js"></script>
+<script src="fractions-adventure.js"></script>
+</body>
+</html>
