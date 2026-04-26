@@ -1,0 +1,1 @@
+This is the final best Maths Universe version. Upload every file inside this folder to your GitHub mathsuniverse repository and allow GitHub to replace old files. Then wait 1-3 minutes and refresh the site with Command+Shift+R.

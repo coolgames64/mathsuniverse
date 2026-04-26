@@ -80,3 +80,51 @@ a{color:inherit}.container{width:min(1120px,calc(100% - 32px));margin:auto}.skip
 .convince-note{margin-top:.9rem;padding:.8rem 1rem;border-radius:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12)}
 .trust-strip .grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
 @media (max-width: 800px){.trust-strip .grid-3{grid-template-columns:1fr}}
+
+
+/* Super polished homepage */
+.hero-polished{position:relative}
+.polished-grid{align-items:center;gap:2rem}
+.mode-showcase{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;margin:1.2rem 0}
+.showcase-panel{display:block;padding:1.15rem;border-radius:24px;text-decoration:none;border:1px solid rgba(255,255,255,.14);box-shadow:0 18px 40px rgba(0,0,0,.22);transition:transform .2s ease, box-shadow .2s ease;background:rgba(255,255,255,.06)}
+.showcase-panel:hover{transform:translateY(-3px);box-shadow:0 22px 48px rgba(0,0,0,.26)}
+.showcase-panel.normal{background:linear-gradient(180deg, rgba(255,255,255,.13), rgba(104,172,255,.12));border-color:rgba(255,255,255,.20)}
+.showcase-panel.game{background:linear-gradient(180deg, rgba(154,93,255,.30), rgba(36,18,96,.48));border-color:rgba(255,226,132,.28)}
+.showcase-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.7rem}
+.showcase-icon{font-size:1.8rem}
+.showcase-panel h3{margin:.15rem 0 .55rem}
+.showcase-panel ul{margin:0 0 .8rem 1rem;padding:0;display:grid;gap:.35rem}
+.showcase-cta{display:inline-flex;font-weight:700}
+.giant-btn{font-size:1.12rem;padding:1rem 1.35rem;min-width:220px;justify-content:center}
+.polished-actions{gap:.9rem;margin-top:.6rem}
+.hero-mini-proof{display:flex;flex-wrap:wrap;gap:.6rem;margin:1rem 0 .8rem}
+.hero-mini-proof span{padding:.45rem .75rem;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);font-size:.92rem}
+.polished-visual img{filter:drop-shadow(0 20px 50px rgba(52,32,120,.38))}
+.polished-promo,.polished-card,.polished-strip{box-shadow:0 22px 55px rgba(0,0,0,.18)}
+.polished-features .feature{box-shadow:0 18px 42px rgba(0,0,0,.14)}
+@media (max-width: 900px){.mode-showcase{grid-template-columns:1fr}.giant-btn{min-width:0;width:100%}}
+
+
+/* Ultimate homepage tuning */
+.hero-ultimate .convince-note{margin-top:1rem;max-width:56rem}
+.hero-ultimate .showcase-panel h3{font-size:1.25rem}
+.hero-ultimate .showcase-panel ul li{line-height:1.4}
+.hero-ultimate .giant-btn{font-size:1.12rem}
+
+
+/* Final matching logo + banner */
+.brand img{width:56px;height:56px;object-fit:contain;border-radius:14px;filter:drop-shadow(0 8px 18px rgba(89,120,255,.25))}
+.hero-ultimate .polished-visual{border-radius:32px;overflow:hidden;background:rgba(255,255,255,.04)}
+.hero-ultimate .polished-visual img{width:100%;height:auto;display:block}
+@media (min-width: 950px){.hero-ultimate .polished-visual{transform:scale(1.03)}}
+
+
+/* Added fractions worksheet PDF pack */
+.worksheet-feature-banner{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(240px,.8fr);gap:1.2rem;align-items:center;background:radial-gradient(circle at top right,rgba(250,204,21,.14),transparent 36%),linear-gradient(180deg,rgba(93,220,255,.10),rgba(139,92,246,.06));overflow:hidden}
+.worksheet-feature-banner img{width:100%;border-radius:18px;border:1px solid rgba(255,255,255,.14);box-shadow:0 18px 42px rgba(0,0,0,.22)}
+.worksheet-pack-feature{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,420px);gap:1.2rem;align-items:center;background:radial-gradient(circle at bottom left,rgba(139,92,246,.16),transparent 40%),rgba(255,255,255,.055)}
+.worksheet-pack-feature img{width:100%;border-radius:18px;border:1px solid rgba(255,255,255,.14);box-shadow:0 18px 42px rgba(0,0,0,.2)}
+.worksheet-preview-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin-top:1rem}
+.worksheet-preview{padding:0;overflow:hidden}.worksheet-preview img{width:100%;display:block;background:#fff}.worksheet-preview h3,.worksheet-preview p{padding:0 1rem}.worksheet-preview p{padding-bottom:1rem}.worksheet-pack-mini{background:linear-gradient(180deg,rgba(250,204,21,.12),rgba(93,220,255,.08))}
+@media(max-width:820px){.worksheet-feature-banner,.worksheet-pack-feature{grid-template-columns:1fr}.worksheet-feature-banner img{max-height:360px;object-fit:cover;object-position:top}}
+@media print{.worksheet-feature-banner,.worksheet-pack-feature,.worksheet-preview-grid{break-inside:avoid}}
