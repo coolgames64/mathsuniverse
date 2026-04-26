@@ -1,0 +1,15 @@
+Maths Universe Premium Worksheet Studio upgrade
+
+New generator features:
+- learner name and custom worksheet title
+- topic, difficulty, theme, and question count controls
+- mixed skills option
+- fraction diagrams where helpful
+- optional answer key
+- on-screen answer checking
+- hints for wrong answers
+- reveal answers
+- clear answers
+- print / save as PDF support
+
+This still works on GitHub Pages because it is plain HTML, CSS, and JavaScript.

@@ -1,0 +1,24 @@
+MATHS UNIVERSE PREMIUM SETUP
+
+This premium system works on GitHub Pages as a demo/manual-code premium system.
+
+How it works now:
+1. Open premium.html.
+2. Enter one of the demo premium codes:
+   - MATHS-STAR
+   - SPACE-BOOST
+   - FRACTION-HERO
+3. Premium tools unlock on that browser using localStorage.
+
+How to make it feel like paid premium:
+1. Create a Stripe Payment Link in Stripe.
+2. Open premium-config.js.
+3. Paste your Stripe Payment Link into paymentLink.
+4. Upload premium-config.js to GitHub.
+5. Users click Buy Premium and pay using Stripe.
+6. For now, you or your parent can manually email them a premium code.
+
+Important:
+This is not a secure paid membership system yet because GitHub Pages is static and public.
+For real secure premium accounts, you need Stripe + Firebase/Supabase/backend.
+Never put secret keys or private passwords inside GitHub Pages JavaScript.
