@@ -1,0 +1,12 @@
+Maths Universe Games Hub update
+
+This update adds a new Games Hub inspired by common patterns from major maths game sites:
+- game directory by topic/style
+- battle and adventure choices
+- race-style fluency practice
+- quick-fire timed practice
+- logic/reasoning puzzles
+- quest board with stars
+- worksheet links and printable practice
+
+Existing pages were kept. New files added: games-hub.html and games-hub.js. Styles were appended to styles.css.

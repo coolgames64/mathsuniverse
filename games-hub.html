@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Games Hub | Maths Universe</title>
+  <meta name="description" content="A more interactive Maths Universe games hub with quests, races, puzzles, quick-fire maths, and printable practice links.">
+  <link rel="icon" href="favicon.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header"><div class="container nav-bar"><a class="brand" href="index.html"><img src="logo-final.png" alt="Maths Universe logo"><span class="brand-text"><span>Maths Universe</span><small>Games Hub Edition</small></span></a><button class="nav-toggle" data-nav-toggle>Menu</button><nav class="nav-links" data-nav-links><a href="index.html">Home</a><a href="game-arena.html">Game Arena</a><a href="games-hub.html" class="active">Games Hub</a><a href="interactive-lab.html">Interactive Lab</a><a href="premium.html">Premium</a><a href="mission-control.html">Mission Control</a><a href="worksheet-hub.html">Worksheets</a><a href="teacher.html">Teacher Portal</a><a href="formula-vault.html">Formula Vault</a><a href="mistake-library.html">Mistake Library</a></nav><div class="progress-chip"><span data-progress-text>0/14 missions completed</span></div><div data-teacher-status class="teacher-status off">Student mode</div></div></header>
+<div class="mode-banner hidden" data-teacher-banner><div class="container"><span>Teacher mode active for <strong data-teacher-name>Teacher</strong>. Student locks are bypassed on this browser.</span><a href="teacher.html">Open Teacher Portal</a></div></div>
+<main id="main">
+<section class="container page-hero arcade-hero"><div class="breadcrumb"><a href="index.html">Home</a><span>/</span><span>Games Hub</span></div><div class="topic-meta"><span class="badge">New</span><span class="badge">Game directory</span><span class="badge">Quick play</span></div><h1>Maths Universe Games Hub</h1><p class="lead">Pick a game like a real arcade: quick-fire practice, space races, logic puzzles, monster quests, printable practice, and calm learning tools — all without removing the normal course.</p><div class="arcade-stats"><span>⭐ Stars <b data-arcade-stars>0</b></span><span>🔥 Best streak <b data-arcade-best>0</b></span><span>🏁 Races won <b data-races-won>0</b></span><span>🧩 Puzzles solved <b data-puzzles-solved>0</b></span></div></section>
+
+<section class="container section"><div class="arcade-layout">
+  <aside class="card pad arcade-side">
+    <h2>Find a game</h2>
+    <label class="arcade-label">Topic<select data-game-filter-topic><option value="all">All topics</option><option value="addition">Addition</option><option value="multiplication">Times tables</option><option value="fractions">Fractions</option><option value="place-value">Place value</option><option value="logic">Logic</option><option value="worksheets">Worksheets</option></select></label>
+    <label class="arcade-label">Style<select data-game-filter-style><option value="all">All styles</option><option value="battle">Battle</option><option value="race">Race</option><option value="speed">Speed</option><option value="puzzle">Puzzle</option><option value="calm">Calm</option><option value="print">Print</option></select></label>
+    <div class="arcade-mini-note">This hub keeps your old pages. It just adds a more game-like front door.</div>
+  </aside>
+  <section class="arcade-card-grid" data-game-card-grid>
+    <a class="arcade-game-card" data-topic="battle multiplication addition fractions" data-style="battle" href="game-arena.html"><span>⚔️</span><h3>Monster Battle Arena</h3><p>Answer maths to damage monsters, earn coins, and build streaks.</p><small>Battle • mixed topics</small></a>
+    <a class="arcade-game-card" data-topic="addition multiplication fractions place-value" data-style="calm" href="interactive-lab.html"><span>🧪</span><h3>Interactive Lab</h3><p>Fraction builder, place-value machine, equation balance, speed run, and reward wheel.</p><small>Calm tools • interactive</small></a>
+    <a class="arcade-game-card" data-topic="worksheets fractions addition multiplication" data-style="print" href="premium.html#worksheet-generator"><span>🖨️</span><h3>Worksheet Studio</h3><p>Create printable worksheets with topics, difficulty, answer checking, and answer keys.</p><small>Print • practice</small></a>
+    <button class="arcade-game-card" data-open-panel="quickfire" data-topic="multiplication addition" data-style="speed"><span>⏱️</span><h3>Quick-Fire Sprint</h3><p>Beat as many questions as you can before the timer runs out.</p><small>Speed • mental maths</small></button>
+    <button class="arcade-game-card" data-open-panel="race" data-topic="multiplication addition" data-style="race"><span>🏁</span><h3>Space Race</h3><p>Correct answers power your ship. Try to beat the ghost racer.</p><small>Race • fluency</small></button>
+    <button class="arcade-game-card" data-open-panel="logic" data-topic="logic" data-style="puzzle"><span>🧩</span><h3>Logic Door Puzzle</h3><p>Use numbers and operations to open the space door.</p><small>Puzzle • reasoning</small></button>
+    <button class="arcade-game-card" data-open-panel="quest" data-topic="fractions place-value addition multiplication" data-style="battle"><span>🗺️</span><h3>Mini Quest Board</h3><p>Pick a mission card, answer questions, collect stars, and unlock a tiny story reward.</p><small>Quest • adventure</small></button>
+    <a class="arcade-game-card" data-topic="logic" data-style="puzzle calm" href="mistake-library.html"><span>🔎</span><h3>Mistake Detective</h3><p>Find the trap, fix the error, and learn why the answer changes.</p><small>Puzzle • fix it</small></a>
+  </section>
+</div></section>
+
+<section class="container section"><div class="arcade-panels">
+  <section class="card pad arcade-panel" id="quickfire" data-arcade-panel="quickfire"><div class="card-head"><div><h2>Quick-Fire Sprint</h2><p class="small">A fast mental maths challenge inspired by quick-answer practice games.</p></div><span class="timer-pill" data-sprint-time>30</span></div><div class="sprint-controls"><label>Topic<select data-sprint-topic><option value="mixed">Mixed</option><option value="add">Addition</option><option value="times">Times tables</option><option value="fractions">Fractions</option></select></label><button class="btn game-btn" data-start-sprint>Start sprint</button></div><div class="speed-question" data-sprint-question>Press start</div><div class="battle-options" data-sprint-options></div><p class="battle-feedback" data-sprint-feedback>Try to answer quickly. Wrong answers show a hint.</p></section>
+
+  <section class="card pad arcade-panel" id="race" data-arcade-panel="race"><div class="card-head"><div><h2>Space Race</h2><p class="small">Correct answers push your ship forward. Beat the ghost racer before it reaches the finish.</p></div><span class="badge">Race mode</span></div><div class="race-track"><div class="race-lane"><span class="race-ship" data-player-ship>🚀</span></div><div class="race-lane ghost"><span class="race-ship" data-ghost-ship>👻</span></div><span class="finish-line">FINISH</span></div><h3 data-race-question>Press start race</h3><div class="battle-options" data-race-options></div><div class="hero-actions"><button class="btn game-btn" data-start-race>Start race</button><button class="btn secondary" data-reset-race>Reset race</button></div><p class="battle-feedback" data-race-feedback>Answer correctly to move. Wrong answers give a hint and the ghost keeps moving.</p></section>
+
+  <section class="card pad arcade-panel" id="logic" data-arcade-panel="logic"><div class="card-head"><div><h2>Logic Door Puzzle</h2><p class="small">Use all four numbers and any operation to hit the target. This builds reasoning, not just speed.</p></div><span class="badge">Puzzle</span></div><div class="logic-target"><span>Target</span><strong data-logic-target>24</strong></div><div class="logic-numbers" data-logic-numbers></div><label class="arcade-label">Your expression<input data-logic-expression placeholder="Example: (6 + 2) × 3"></label><div class="hero-actions"><button class="btn game-btn" data-check-logic>Open door</button><button class="btn secondary" data-new-logic>New puzzle</button><button class="btn secondary" data-logic-hint>Hint</button></div><p class="battle-feedback" data-logic-feedback>Use the numbers once each. You can use +, −, ×, ÷ and brackets.</p></section>
+
+  <section class="card pad arcade-panel" id="quest" data-arcade-panel="quest"><div class="card-head"><div><h2>Mini Quest Board</h2><p class="small">Pick a quest. Each correct answer lights up a star and moves the story forward.</p></div><span class="badge">Adventure</span></div><div class="quest-board" data-quest-board></div><div class="quest-play hidden" data-quest-play><h3 data-quest-title>Quest</h3><p data-quest-story></p><h2 data-quest-question>Question</h2><div class="battle-options" data-quest-options></div><p class="battle-feedback" data-quest-feedback>Pick an answer.</p></div></section>
+</div></section>
+
+<section class="container section"><div class="card pad"><div class="card-head"><div><h2>How this is inspired by great maths game sites</h2><p class="small">Maths Universe now has a game directory, speed practice, race mode, logic puzzles, quest style learning, and printable practice links — but the original lessons, worksheets, premium tools, and teacher pages are still here.</p></div></div><div class="inspiration-grid"><span>Adventure + battles</span><span>Topic directory</span><span>Quick-fire fluency</span><span>Race practice</span><span>Logic challenges</span><span>Printable practice</span></div></div></section>
+</main>
+<footer class="footer"><div class="container footer-grid"><div><strong>Maths Universe</strong><br><span>Normal learning, game-style practice, worksheets, and teacher tools together.</span></div><div class="footer-links"><a href="index.html#unlock-map">Course map</a><a href="worksheet-hub.html">Worksheets</a><a href="certificate.html">Certificate</a></div></div></footer>
+<script src="app.js"></script>
+<script src="games-hub.js"></script>
+</body>
+</html>
