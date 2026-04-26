@@ -1,0 +1,107 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Adult / Teacher Check | Maths Universe</title><meta name="description" content="Adult or teacher approval for Maths Universe."><link rel="icon" href="favicon.svg"><link rel="stylesheet" href="styles.css"></head><body><a class="skip-link" href="#main">Skip to content</a><header class="site-header"><div class="container nav-bar"><a class="brand" href="index.html"><img src="logo.svg" alt="Maths Universe logo"><span class="brand-text"><span>Maths Universe</span><small>Adult Approval</small></span></a><button class="nav-toggle" data-nav-toggle>Menu</button><nav class="nav-links" data-nav-links><a href="index.html">Home</a><a href="game-arena.html">Game Arena</a><a href="mission-control.html">Mission Control</a><a href="worksheet-hub.html">Worksheets</a><a href="teacher.html">Teacher Portal</a><a href="adult-check.html" class="active">Adult Check</a><a href="formula-vault.html">Formula Vault</a></nav><div class="progress-chip"><span data-progress-text>0/14 missions completed</span></div><div data-teacher-status class="teacher-status off">Student mode</div></div></header><div class="mode-banner hidden" data-teacher-banner><div class="container"><span>Teacher mode active for <strong data-teacher-name>Teacher</strong>. Student locks are bypassed on this browser.</span><a href="teacher.html">Open Teacher Portal</a></div></div><main id="main">
+<section class="container page-hero"><div class="breadcrumb"><a href="index.html">Home</a><a href="game-arena.html">Game Arena</a><span>/</span><span>Adult Check</span></div><h1>Adult / Teacher Check</h1><p class="lead">Maths Universe does not use face scanning to guess someone’s age. A face camera check can be wrong, and it is not a safe way to prove an adult is present. Use an adult or teacher email-code approval instead.</p></section>
+<section class="container section">
+  <div class="teacher-grid">
+    <div class="card pad auth-card" data-adult-start-box>
+      <h2>Adult approval</h2>
+      <p class="small">Ask a parent, carer, or teacher to enter their details. The site will check the email format and create a 6-digit approval code.</p>
+      <form data-adult-request-code>
+        <label for="adult-name">Adult / teacher name</label>
+        <input id="adult-name" name="name" type="text" autocomplete="name" placeholder="Parent or teacher name" required minlength="2">
+        <label for="adult-email">Adult / teacher email</label>
+        <input id="adult-email" name="email" type="email" autocomplete="email" placeholder="adult@example.com" required>
+        <div class="hero-actions"><button class="btn" type="submit">Create 6-digit code</button></div>
+      </form>
+      <p class="server-note"><strong>No face ID used.</strong> This avoids collecting face data. A real website needs a proper email service to actually send the code.</p>
+    </div>
+    <div class="card pad auth-card hidden" data-adult-code-box>
+      <h2>Enter the code</h2>
+      <p class="small">Type the 6-digit code to confirm adult approval on this browser.</p>
+      <form data-adult-verify-code>
+        <label for="adult-code">6-digit code</label>
+        <input id="adult-code" name="code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="123456" required>
+        <div class="hero-actions"><button class="btn" type="submit">Verify adult approval</button></div>
+      </form>
+    </div>
+    <div class="card pad teacher-callout">
+      <h2>Why not face identification?</h2>
+      <ul class="method-list">
+        <li>Face age guessing can be wrong.</li>
+        <li>Photos and cameras should not be used to prove someone is an adult without a proper privacy system.</li>
+        <li>GitHub Pages is a static website, so it cannot securely check identity by itself.</li>
+        <li>Email-code approval is safer and easier for your website right now.</li>
+      </ul>
+      <div class="hero-actions"><a class="btn secondary" href="teacher.html">Go to Teacher Portal</a><a class="btn secondary" href="index.html">Back home</a></div>
+    </div>
+  </div>
+  <div data-adult-message class="auth-message hidden"></div>
+  <div class="teacher-dashboard hidden" data-adult-dashboard style="margin-top:1rem">
+    <div class="card pad">
+      <h2>Adult approval is active</h2>
+      <p>Approved by <strong data-adult-dashboard-name>Adult</strong> <span data-adult-dashboard-email></span>.</p>
+      <div class="teacher-actions"><a class="btn" href="teacher.html">Open Teacher Portal</a><button class="btn secondary" data-adult-clear>Clear adult approval</button></div>
+    </div>
+  </div>
+</section>
+</main><footer class="footer"><div class="container footer-grid"><div><strong>Maths Universe</strong><br><span>Sequential quizzes, worksheets, and clear explanations for students, parents, and teachers.</span></div><div class="footer-links"><a href="index.html#unlock-map">Course map</a><a href="teacher.html">Teacher Portal</a><a href="certificate.html">Certificate</a></div></div></footer><script src="app.js"></script><script>
+(function(){
+  const ADULT_KEY='mathsUniverseAdultApprovalV1';
+  const PENDING_KEY='mathsUniversePendingAdultCodeV1';
+  const root=document.querySelector('[data-adult-start-box]')?.closest('section');
+  if(!root) return;
+  const startBox=root.querySelector('[data-adult-start-box]');
+  const codeBox=root.querySelector('[data-adult-code-box]');
+  const dashboard=root.querySelector('[data-adult-dashboard]');
+  const msg=root.querySelector('[data-adult-message]');
+  function show(text,type){ if(!msg)return; msg.textContent=text; msg.className='auth-message '+(type||'good'); }
+  function getAdult(){ try{return JSON.parse(localStorage.getItem(ADULT_KEY))||null}catch(e){return null} }
+  function getPending(){ try{return JSON.parse(sessionStorage.getItem(PENDING_KEY))||null}catch(e){return null} }
+  function setPending(v){ sessionStorage.setItem(PENDING_KEY,JSON.stringify(v)); }
+  function clearPending(){ sessionStorage.removeItem(PENDING_KEY); }
+  function makeCode(){ return String(Math.floor(100000+Math.random()*900000)); }
+  function badEmail(email){
+    email=(email||'').trim().toLowerCase();
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return true;
+    const parts=email.split('@'); const local=parts[0]; const domain=parts[1];
+    if(!local||local.length<2||!domain||domain.length<4) return true;
+    if(/^(fake|test|none|noemail|email|abc|asdf|qwerty|adult|teacher|parent)$/.test(local)) return true;
+    if(/^(fake|test|example|invalid|mailinator)\./.test(domain)) return true;
+    if(['fake.com','test.com','example.com','example.co.uk','invalid.com','email.com'].includes(domain)) return true;
+    return false;
+  }
+  function render(){
+    const adult=getAdult(); const pending=getPending();
+    if(startBox) startBox.classList.toggle('hidden',!!adult);
+    if(codeBox) codeBox.classList.toggle('hidden',!!adult || !pending);
+    if(dashboard) dashboard.classList.toggle('hidden',!adult);
+    if(adult){ const n=root.querySelector('[data-adult-dashboard-name]'); if(n)n.textContent=adult.name||'Adult'; const e=root.querySelector('[data-adult-dashboard-email]'); if(e)e.textContent='('+adult.email+')'; }
+  }
+  const request=root.querySelector('[data-adult-request-code]');
+  if(request) request.addEventListener('submit',function(e){
+    e.preventDefault();
+    const fd=new FormData(request);
+    const name=(fd.get('name')||'').toString().trim();
+    const email=(fd.get('email')||'').toString().trim().toLowerCase();
+    if(name.length<2) return show('Please enter the adult or teacher name.','bad');
+    if(badEmail(email)) return show('Invalid email. Please enter a real adult or teacher email address.','bad');
+    const code=makeCode();
+    setPending({name,email,code,expires:Date.now()+10*60*1000});
+    render(); show('Demo code: '+code+' . For real email sending, connect an email service or backend later.');
+    const input=root.querySelector('[name="code"]'); if(input) input.focus();
+  });
+  const verify=root.querySelector('[data-adult-verify-code]');
+  if(verify) verify.addEventListener('submit',function(e){
+    e.preventDefault();
+    const code=(new FormData(verify).get('code')||'').toString().trim();
+    const pending=getPending();
+    if(!/^\d{6}$/.test(code)) return show('Enter the 6-digit code.','bad');
+    if(!pending) return show('No code has been created yet.','bad');
+    if(Date.now()>pending.expires){ clearPending(); render(); return show('That code expired. Please create a new one.','bad'); }
+    if(code!==pending.code) return show('That code is not correct. Please try again.','bad');
+    localStorage.setItem(ADULT_KEY,JSON.stringify({name:pending.name,email:pending.email,verifiedAt:new Date().toISOString()}));
+    clearPending(); render(); show('Adult approval verified on this browser.');
+  });
+  root.querySelectorAll('[data-adult-clear]').forEach(btn=>btn.addEventListener('click',function(){ localStorage.removeItem(ADULT_KEY); clearPending(); render(); show('Adult approval cleared.'); }));
+  render();
+})();
+</script></body></html>

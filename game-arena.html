@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Arena | Maths Universe</title>
+  <meta name="description" content="Play fast maths battles, earn XP and coins, and unlock missions.">
+  <link rel="icon" href="favicon.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header"><div class="container nav-bar"><a class="brand" href="index.html"><img src="logo.svg" alt="Maths Universe logo"><span class="brand-text"><span>Maths Universe</span><small>Game Mode Edition</small></span></a><button class="nav-toggle" data-nav-toggle>Menu</button><nav class="nav-links" data-nav-links><a href="index.html">Home</a><a href="game-arena.html" class="active">Game Arena</a><a href="mission-control.html">Mission Control</a><a href="worksheet-hub.html">Worksheets</a><a href="teacher.html">Teacher Portal</a><a href="formula-vault.html">Formula Vault</a><a href="mistake-library.html">Mistake Library</a></nav><div class="progress-chip"><span data-progress-text>0/14 missions completed</span></div><div data-teacher-status class="teacher-status off">Student mode</div></div></header>
+<main id="main">
+<section class="container page-hero game-page-hero"><div class="breadcrumb"><a href="index.html">Home</a><span>/</span><span>Game Arena</span></div><div class="game-hud big" data-game-hud><span>Level <b data-game-level>1</b></span><span>XP <b data-game-xp>0</b></span><span>Coins <b data-game-coins>0</b></span><span>Best streak <b data-game-best>0</b></span></div><h1>Maths Battle Arena</h1><p class="lead">Choose a mode. Answer fast. Correct answers damage the monster. Wrong answers damage your shield. Win coins and XP.</p></section>
+<section class="container section">
+  <div class="arena-grid">
+    <section class="battle-card card pad">
+      <div class="battle-top"><div><div class="eyebrow">Current battle</div><h2 data-enemy-name>Number Goblin</h2></div><div class="enemy-face" data-enemy-face>👾</div></div>
+      <div class="health-row"><span>Your shield</span><div class="health"><span data-player-health></span></div><strong data-player-hp>100</strong></div>
+      <div class="health-row"><span>Monster HP</span><div class="health monster"><span data-enemy-health></span></div><strong data-enemy-hp>100</strong></div>
+      <div class="question-panel">
+        <div class="question-meta"><span data-mode-label>Mixed mode</span><span>Streak: <b data-game-streak>0</b></span></div>
+        <h2 data-battle-question>Press Start Battle</h2>
+        <div class="battle-options" data-battle-options></div>
+        <div class="battle-feedback" data-battle-feedback>Pick a mode and start. No long reading needed.</div>
+      </div>
+      <div class="hero-actions"><button class="btn game-btn" data-start-battle>Start Battle</button><button class="btn secondary" data-new-question>Skip Question</button><button class="btn secondary" data-reset-game>Reset Game Stats</button></div>
+    </section>
+    <aside class="card pad game-side">
+      <h2>Choose mode</h2>
+      <div class="mode-pills" data-mode-pills>
+        <button class="mode-pill active" data-mode="mixed">Mixed</button>
+        <button class="mode-pill" data-mode="times">Times Tables</button>
+        <button class="mode-pill" data-mode="add">Addition</button>
+        <button class="mode-pill" data-mode="subtract">Subtraction</button>
+        <button class="mode-pill" data-mode="fractions">Fractions</button>
+      </div>
+      <h2>Power-ups</h2>
+      <div class="powerups"><button class="powerup" data-power="fifty">50/50 <small>20 coins</small></button><button class="powerup" data-power="heal">Heal shield <small>30 coins</small></button></div>
+      <h2>Daily challenge</h2>
+      <p class="small" data-daily-challenge>Win 3 battles to claim bonus coins.</p>
+      <button class="btn secondary" data-claim-daily>Claim if done</button>
+    </aside>
+  </div>
+</section>
+<section class="container section"><div class="card pad"><h2>Then unlock the real course</h2><p class="lead">When the arena feels easy, go beat the official mission quizzes and unlock the map.</p><div class="hero-actions"><a class="btn" href="quiz.html?topic=start-here&q=1">Start official unlock quiz</a><a class="btn secondary" href="index.html#unlock-map">Open unlock map</a></div></div></section>
+</main>
+<footer class="footer"><div class="container footer-grid"><div><strong>Maths Universe</strong><br><span>Fast maths battles plus proper lessons when you are ready.</span></div><div class="footer-links"><a href="index.html#unlock-map">Course map</a><a href="worksheet-hub.html">Worksheets</a><a href="certificate.html">Certificate</a></div></div></footer>
+<script src="app.js"></script>
+<script>
+(function(){
+  const KEY='mathsUniverseGameStatsV1';
+  const enemies=[['Number Goblin','👾',90],['Fraction Dragon','🐉',120],['Decimal Slime','🟢',100],['Algebra Wizard','🧙',130],['Boss Calculator','🤖',150]];
+  let mode='mixed', enemyIndex=0, playerHP=100, enemyHP=90, current=null, battleStarted=false;
+  const $=s=>document.querySelector(s); const $$=s=>[...document.querySelectorAll(s)];
+  function stats(){try{return JSON.parse(localStorage.getItem(KEY))||{xp:0,coins:0,streak:0,best:0,wins:0,daily:false}}catch(e){return {xp:0,coins:0,streak:0,best:0,wins:0,daily:false}}}
+  function save(x){localStorage.setItem(KEY,JSON.stringify(x)); renderHud();}
+  function level(xp){return Math.floor(xp/100)+1}
+  window.MU_RENDER_GAME_HUD=function(){renderHud();}
+  function renderHud(){const s=stats(); $$('[data-game-xp]').forEach(e=>e.textContent=s.xp||0); $$('[data-game-coins]').forEach(e=>e.textContent=s.coins||0); $$('[data-game-streak]').forEach(e=>e.textContent=s.streak||0); $$('[data-game-best]').forEach(e=>e.textContent=s.best||0); $$('[data-game-level]').forEach(e=>e.textContent=level(s.xp||0));}
+  function setFeedback(t,good){const el=$('[data-battle-feedback]'); el.textContent=t; el.className='battle-feedback '+(good?'good':'bad');}
+  function updateBars(){const enemy=enemies[enemyIndex]; $('[data-enemy-name]').textContent=enemy[0]; $('[data-enemy-face]').textContent=enemy[1]; $('[data-player-hp]').textContent=Math.max(0,playerHP); $('[data-enemy-hp]').textContent=Math.max(0,enemyHP); $('[data-player-health]').style.width=Math.max(0,playerHP)+'%'; $('[data-enemy-health]').style.width=Math.max(0,enemyHP/enemy[2]*100)+'%';}
+  function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+  function shuffle(a){for(let i=a.length-1;i>0;i--){const j=rand(0,i); [a[i],a[j]]=[a[j],a[i]];} return a}
+  function makeQ(){
+    let m=mode==='mixed'?['times','add','subtract','fractions'][rand(0,3)]:mode;
+    let q='', ans=0, hint='';
+    if(m==='times'){const a=rand(2,12),b=rand(2,12); q=`${a} × ${b} = ?`; ans=a*b; hint='Use times-table facts.';}
+    if(m==='add'){const a=rand(20,250),b=rand(10,180); q=`${a} + ${b} = ?`; ans=a+b; hint='Add tens and ones carefully.';}
+    if(m==='subtract'){const a=rand(80,300),b=rand(10,79); q=`${a} − ${b} = ?`; ans=a-b; hint='Count back or split the number.';}
+    if(m==='fractions'){const den=[2,3,4,5,6,8,10][rand(0,6)]; const n=rand(1,den-1); q=`What is ${n}/${den} of ${den*rand(2,9)}?`; const total=Number(q.match(/of (\d+)/)[1]); ans=total/den*n; hint='Divide by the denominator, then multiply by the numerator.';}
+    let opts=[ans]; while(opts.length<4){let wrong=ans+rand(-12,12); if(wrong!==ans && wrong>=0 && !opts.includes(wrong)) opts.push(wrong);} return {q,ans,opts:shuffle(opts),hint};
+  }
+  function showQ(){if(!battleStarted)return; current=makeQ(); $('[data-battle-question]').textContent=current.q; $('[data-mode-label]').textContent=mode.charAt(0).toUpperCase()+mode.slice(1)+' mode'; $('[data-battle-options]').innerHTML=current.opts.map(v=>`<button class="option" data-answer="${v}">${v}</button>`).join(''); $$('[data-answer]').forEach(b=>b.addEventListener('click',answer)); updateBars();}
+  function answer(e){if(!current)return; const val=Number(e.currentTarget.dataset.answer); const s=stats(); if(val===current.ans){enemyHP-=25; s.xp=(s.xp||0)+10; s.coins=(s.coins||0)+5; s.streak=(s.streak||0)+1; s.best=Math.max(s.best||0,s.streak); save(s); e.currentTarget.classList.add('correct'); setFeedback('Critical hit! +10 XP and +5 coins.',true); if(enemyHP<=0){win(); return;} setTimeout(showQ,650);} else {playerHP-=20; s.streak=0; save(s); e.currentTarget.classList.add('wrong'); setFeedback('Shield hit! Hint: '+current.hint,false); if(playerHP<=0){lose(); return;}}
+    updateBars();}
+  function win(){const s=stats(); s.wins=(s.wins||0)+1; s.xp=(s.xp||0)+30; s.coins=(s.coins||0)+20; save(s); setFeedback('Monster defeated! +30 XP and +20 coins. New monster unlocked.',true); battleStarted=false; enemyIndex=(enemyIndex+1)%enemies.length; setTimeout(start,1000)}
+  function lose(){setFeedback('Game over. Press Start Battle and try again.',false); battleStarted=false; const s=stats(); s.streak=0; save(s)}
+  function start(){battleStarted=true; playerHP=100; enemyHP=enemies[enemyIndex][2]; updateBars(); showQ(); setFeedback('Battle started. Choose the answer to attack!',true)}
+  $$('[data-mode]').forEach(b=>b.addEventListener('click',()=>{$$('[data-mode]').forEach(x=>x.classList.remove('active')); b.classList.add('active'); mode=b.dataset.mode; showQ();}));
+  $('[data-start-battle]').addEventListener('click',start); $('[data-new-question]').addEventListener('click',showQ);
+  $('[data-reset-game]').addEventListener('click',()=>{if(confirm('Reset XP, coins, streak, and wins?')){localStorage.removeItem(KEY); enemyIndex=0; playerHP=100; enemyHP=enemies[0][2]; battleStarted=false; renderHud(); updateBars(); setFeedback('Stats reset. Start a new battle.',true);}});
+  $$('[data-power]').forEach(btn=>btn.addEventListener('click',()=>{const s=stats(); if(btn.dataset.power==='heal'){if((s.coins||0)<30)return setFeedback('Need 30 coins for heal.',false); s.coins-=30; playerHP=Math.min(100,playerHP+35); save(s); updateBars(); setFeedback('Shield healed.',true);} if(btn.dataset.power==='fifty'){if((s.coins||0)<20)return setFeedback('Need 20 coins for 50/50.',false); s.coins-=20; save(s); let buttons=$$('[data-answer]'); let wrong=buttons.filter(b=>Number(b.dataset.answer)!==current.ans).slice(0,2); wrong.forEach(b=>b.style.visibility='hidden'); setFeedback('Two wrong answers removed.',true);}}));
+  $('[data-claim-daily]').addEventListener('click',()=>{const s=stats(); if(s.daily)return setFeedback('Daily bonus already claimed on this browser.',false); if((s.wins||0)<3)return setFeedback('Win 3 battles first. Current wins: '+(s.wins||0),false); s.coins=(s.coins||0)+50; s.xp=(s.xp||0)+50; s.daily=true; save(s); setFeedback('Daily bonus claimed! +50 XP and +50 coins.',true);});
+  renderHud(); updateBars();
+})();
+</script>
+</body>
+</html>

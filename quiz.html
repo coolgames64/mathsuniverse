@@ -15,7 +15,7 @@
     <a class="brand" href="index.html"><img src="logo.svg" alt="Maths Universe logo"><span class="brand-text"><span>Maths Universe</span><small>Unlock Quiz Edition</small></span></a>
     <button class="nav-toggle" data-nav-toggle>Menu</button>
     <nav class="nav-links" data-nav-links>
-      <a href="index.html">Home</a>
+      <a href="index.html">Home</a><a href="game-arena.html">Game Arena</a>
       <a href="mission-control.html">Mission Control</a>
       <a href="worksheet-hub.html">Worksheets</a>
       <a href="teacher.html">Teacher Portal</a>
@@ -34,7 +34,7 @@
 </div>
 <main id="main" data-quiz-main>
   <section class="container page-hero">
-    <div class="breadcrumb"><a href="index.html">Home</a><span>/</span><span>Quiz</span></div>
+    <div class="breadcrumb"><a href="index.html">Home</a><a href="game-arena.html">Game Arena</a><span>/</span><span>Quiz</span></div>
     <h1>Loading quiz...</h1>
   </section>
 </main>
@@ -87,6 +87,11 @@ function muMarkQuestion(slug, q) {
   s.questions[slug][q] = true;
   muSaveState(s);
 }
+function muGameStats(){try{return JSON.parse(localStorage.getItem('mathsUniverseGameStatsV1'))||{xp:0,coins:0,streak:0,best:0,wins:0,daily:false}}catch(e){return {xp:0,coins:0,streak:0,best:0,wins:0,daily:false}}}
+function muSaveGameStats(s){localStorage.setItem('mathsUniverseGameStatsV1', JSON.stringify(s));}
+function muAwardQuizReward(q){const s=muGameStats();s.xp=(s.xp||0)+15;s.coins=(s.coins||0)+8;s.streak=(s.streak||0)+1;s.best=Math.max(s.best||0,s.streak||0);muSaveGameStats(s);return '+15 XP, +8 coins';}
+function muResetQuizStreak(){const s=muGameStats();s.streak=0;muSaveGameStats(s);}
+
 function muMarkComplete(slug) {
   const s = muState();
   if (!s.completed.includes(slug)) s.completed.push(slug);
@@ -130,9 +135,9 @@ function muRenderQuiz() {
   ).join('');
   main.innerHTML = `
     <section class="container page-hero">
-      <div class="breadcrumb"><a href="index.html">Home</a><span>/</span><a href="${item.file}">${muEsc(item.title)}</a><span>/</span><span>Question ${q}</span></div>
+      <div class="breadcrumb"><a href="index.html">Home</a><a href="game-arena.html">Game Arena</a><span>/</span><a href="${item.file}">${muEsc(item.title)}</a><span>/</span><span>Question ${q}</span></div>
       <h1>${muEsc(item.title)} Quiz</h1>
-      <p class="lead">Question ${q} of 10. Answer correctly to unlock the next question.</p>
+      <p class="lead">Boss question ${q} of 10. Correct answers earn XP, coins, and unlock the next level.</p>
     </section>
     <section class="container section">
       <div class="question-box card" data-dynamic-question>
@@ -161,17 +166,17 @@ function muRenderQuiz() {
         btn.classList.add('correct');
         muMarkQuestion(slug, q);
         feedback.className = 'feedback good';
-        feedback.innerHTML = `<strong>Correct.</strong> ${muEsc(btn.dataset.explain)}`;
+        const reward = muAwardQuizReward(q); feedback.innerHTML = `<strong>Critical hit!</strong> ${reward}. ${muEsc(btn.dataset.explain)}`;
         if (q === 10) {
           muMarkComplete(slug);
-          feedback.innerHTML += '<br><br><strong>Mission complete.</strong> The next mission is now unlocked.';
+          feedback.innerHTML += '<br><br><strong>Boss defeated.</strong> Mission complete. The next mission is now unlocked.';
         }
         nextBox.classList.remove('hidden');
         if (typeof updateUI === 'function') updateUI();
       } else {
         btn.classList.add('wrong');
         feedback.className = 'feedback bad';
-        feedback.innerHTML = `<strong>Not quite.</strong> ${muEsc(btn.dataset.explain)}<br>Read the hint, then try another option.`;
+        muResetQuizStreak(); feedback.innerHTML = `<strong>Shield hit.</strong> ${muEsc(btn.dataset.explain)}<br>Try another answer to strike back.`;
       }
       feedback.classList.remove('hidden');
     });

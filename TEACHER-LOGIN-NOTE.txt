@@ -18,3 +18,6 @@ That endpoint should accept JSON like:
 {"name":"Teacher Name","email":"teacher@school.com","code":"123456"}
 
 Then it should send the code by email.
+
+ADULT CHECK UPDATE
+This version adds adult-check.html. It deliberately does not use face identification or age guessing, because webcam age checks can be inaccurate and create privacy issues. It uses adult/teacher email-code approval instead. On GitHub Pages, the code is still a demo code unless you connect an email sending service/backend.
