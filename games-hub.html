@@ -4,135 +4,87 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Games Hub | Maths Universe</title>
-  <meta name="description" content="A more game-like Maths Universe arcade with asteroids, monsters, racing, treasure doors, pizza fractions, rewards, and maths missions.">
+  <meta name="description" content="A bright, kid-friendly Maths Universe games hub with pizza fractions, colour builder, rocket compare, monster feed, and boss quests.">
   <link rel="icon" href="favicon.svg">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header"><div class="container nav-bar"><a class="brand" href="index.html"><img src="logo-final.png" alt="Maths Universe logo"><span class="brand-text"><span>Maths Universe</span><small>Arcade 2.0</small></span></a><button class="nav-toggle" data-nav-toggle>Menu</button><nav class="nav-links" data-nav-links><a href="index.html">Home</a><a href="game-arena.html">Game Arena</a><a href="games-hub.html" class="active">Games Hub</a><a href="fractions-adventure.html">Fraction Adventure</a><a href="fraction-react-game.html">Pizza Game</a><a href="interactive-lab.html">Interactive Lab</a><a href="premium.html">Premium</a><a href="mission-control.html">Mission Control</a><a href="worksheet-hub.html">Worksheets</a><a href="teacher.html">Teacher Portal</a><a href="formula-vault.html">Formula Vault</a><a href="mistake-library.html">Mistake Library</a></nav><div class="progress-chip"><span data-progress-text>0/14 missions completed</span></div><div data-teacher-status class="teacher-status off">Student mode</div></div></header>
+<header class="site-header"><div class="container nav-bar"><a class="brand" href="index.html"><img src="logo-final.png" alt="Maths Universe logo"><span class="brand-text"><span>Maths Universe</span><small>Playroom Games</small></span></a><button class="nav-toggle" data-nav-toggle>Menu</button><nav class="nav-links" data-nav-links><a href="index.html">Home</a><a href="game-arena.html">Game Arena</a><a href="games-hub.html" class="active">Games Hub</a><a href="fractions-adventure.html">Fraction Adventure</a><a href="fraction-react-game.html">Pizza Game</a><a href="interactive-lab.html">Interactive Lab</a><a href="premium.html">Premium</a><a href="mission-control.html">Mission Control</a><a href="worksheet-hub.html">Worksheets</a><a href="teacher.html">Teacher Portal</a></nav><div class="progress-chip"><span data-progress-text>0/14 missions completed</span></div><div data-teacher-status class="teacher-status off">Student mode</div></div></header>
 <div class="mode-banner hidden" data-teacher-banner><div class="container"><span>Teacher mode active for <strong data-teacher-name>Teacher</strong>. Student locks are bypassed on this browser.</span><a href="teacher.html">Open Teacher Portal</a></div></div>
-<main id="main">
-<section class="container section"><div class="card pad fraction-callout-card"><div><div class="eyebrow">Best for 7-year-old fraction learning</div><h2>Fraction Planet Adventure</h2><p class="lead">A game world built only for fractions: pizza builder, picture matching, rocket compare, monster feeding, and a final dragon boss.</p><div class="hero-actions"><a class="btn game-btn" href="fractions-adventure.html">🍕 Launch Fraction Planet</a><a class="btn secondary" href="fraction-react-game.html">🍕 Launch Pizza Mini Game</a></div></div><div class="fraction-callout-icons"><span>🍕</span><span>🚀</span><span>👾</span><span>🐉</span></div></div></section>
 
-<section class="arcade2-hero">
-  <div class="container arcade2-hero-grid">
-    <div>
-      <div class="breadcrumb"><a href="index.html">Home</a><span>/</span><span>Games Hub</span></div>
-      <div class="topic-meta"><span class="badge">Arcade 2.0</span><span class="badge">Real mini games</span><span class="badge">Rewards save</span></div>
-      <h1>Maths Universe Arcade</h1>
-      <p class="lead">This version is much more gamey: shoot asteroids, defeat monsters, race rockets, open treasure doors, build pizza fractions, collect coins, unlock badges, and still learn real maths.</p>
-      <div class="arcade2-actions">
-        <button class="btn game-btn" data-jump-game="asteroids">Play Asteroid Blaster</button>
-        <button class="btn secondary" data-jump-game="tower">Try Monster Tower</button>
-        <button class="btn secondary" data-daily-chest>Open Daily Chest</button>
+<main id="main" class="playroom-page">
+  <section class="playroom-hero">
+    <div class="container playroom-hero-grid">
+      <div>
+        <div class="eyebrow">Made to feel more like real kid games</div>
+        <h1>Maths Universe Playroom</h1>
+        <p class="lead">Bright mini games, big buttons, moving rewards, stars, confetti, and simple maths. Pick a game, play quickly, and learn without feeling like a worksheet.</p>
+        <div class="playroom-actions">
+          <button class="btn game-btn" data-open-mode="pizza">🍕 Play Pizza Party</button>
+          <button class="btn secondary" data-open-mode="builder">🎨 Colour It In</button>
+          <a class="btn secondary" href="fraction-react-game.html">Open Uploaded Pizza Game</a>
+        </div>
+      </div>
+      <div class="playroom-player-card">
+        <div class="player-avatar" data-play-avatar>🧑‍🚀</div>
+        <h2>Player Card</h2>
+        <div class="playroom-stats">
+          <span>🏆 Score <b data-play-score>0</b></span>
+          <span>⭐ Stars <b data-play-stars>0</b></span>
+          <span>🪙 Coins <b data-play-coins>0</b></span>
+          <span>Lv. <b data-play-level>1</b></span>
+        </div>
+        <div class="play-xp"><span data-play-xpbar></span></div>
+        <div class="avatar-row kid-avatar-row" data-play-avatar-row>
+          <button data-avatar="🧑‍🚀">🧑‍🚀</button><button data-avatar="🦊">🦊</button><button data-avatar="🐼">🐼</button><button data-avatar="🐉">🐉</button><button data-avatar="🤖">🤖</button>
+        </div>
       </div>
     </div>
-    <div class="arcade2-console card pad">
-      <div class="arcade-screen">
-        <div class="pixel-stars"></div>
-        <div class="arcade-avatar" data-arcade-avatar>🧑‍🚀</div>
-        <div class="arcade-title">PLAYER CARD</div>
-        <div class="arcade-level">Level <b data-arcade-level>1</b></div>
-        <div class="xp-bar"><span data-xp-bar></span></div>
+  </section>
+
+  <section class="container section" data-play-menu>
+    <div class="playroom-title-row">
+      <div><h2>Choose a mini game</h2><p class="small">These are designed like the uploaded pizza game: big, cheerful, visual, and easy for a 7-year-old to understand.</p></div>
+      <button class="btn secondary" data-reset-playroom>Reset Playroom</button>
+    </div>
+    <div class="kid-game-grid">
+      <button class="kid-game-card" data-open-mode="pizza"><span>🍕</span><strong>Name That Fraction</strong><small>Look at the pizza and choose the fraction.</small></button>
+      <button class="kid-game-card" data-open-mode="builder"><span>🎨</span><strong>Colour It In</strong><small>Tap blocks to build the target fraction.</small></button>
+      <button class="kid-game-card" data-open-mode="compare"><span>🚀</span><strong>Rocket Compare</strong><small>Choose the bigger fraction and watch the rocket fly.</small></button>
+      <button class="kid-game-card" data-open-mode="monster"><span>👾</span><strong>Feed the Monster</strong><small>Add same-denominator fractions to feed the alien.</small></button>
+      <button class="kid-game-card" data-open-mode="boss"><span>🐲</span><strong>Fraction Boss</strong><small>Five mixed questions with hearts and a dragon.</small></button>
+      <a class="kid-game-card link-card" href="fraction-react-game.html"><span>🍕</span><strong>Uploaded Pizza Game</strong><small>Open the React-style game you uploaded.</small></a>
+    </div>
+  </section>
+
+  <section class="container section hidden" data-play-game>
+    <div class="play-shell">
+      <div class="play-topbar">
+        <button class="play-back" data-back-menu>← Games</button>
+        <div class="play-badges"><span>🏆 <b data-round-score>0</b></span><span>⭐ <b data-round-stars>0</b></span><span>🔥 <b data-round-streak>0</b></span></div>
       </div>
-      <div class="arcade2-stats">
-        <span>🪙 Coins <b data-coins>0</b></span>
-        <span>💎 Gems <b data-gems>0</b></span>
-        <span>⭐ Stars <b data-stars>0</b></span>
-        <span>🔥 Best <b data-best-streak>0</b></span>
-      </div>
-      <div class="avatar-row" data-avatar-picker>
-        <button data-avatar="🧑‍🚀">🧑‍🚀</button><button data-avatar="🦊">🦊</button><button data-avatar="🐉">🐉</button><button data-avatar="🤖">🤖</button><button data-avatar="🧙">🧙</button>
+      <h2 data-game-title>Pizza Party</h2>
+      <div class="play-game-area" data-game-area></div>
+      <div class="play-progress"><span data-round-progress></span></div>
+      <p class="play-feedback" data-play-feedback>Pick an answer to start.</p>
+      <div class="play-controls"><button class="btn secondary" data-play-hint>Hint</button><button class="btn secondary" data-next-question>Next Question</button></div>
+    </div>
+  </section>
+
+  <section class="container section">
+    <div class="card pad playroom-note">
+      <h2>Why this feels more gamey</h2>
+      <div class="grid-3">
+        <div><h3>Big visual play</h3><p class="small">Pizza slices, colour blocks, rockets, monsters, hearts, and boss battles.</p></div>
+        <div><h3>Fast rewards</h3><p class="small">Score, stars, coins, levels, streaks, confetti, and tiny celebrations.</p></div>
+        <div><h3>Still teaches maths</h3><p class="small">Every game uses visual fractions before showing harder calculation.</p></div>
       </div>
     </div>
-  </div>
-</section>
-
-<section class="container section">
-  <div class="arcade2-map card pad">
-    <div class="card-head"><div><h2>Choose a game zone</h2><p class="small">These are not just links. They are playable mini games with lives, timers, moving objects, rewards, and hints.</p></div><button class="btn secondary" data-reset-arcade>Reset arcade stats</button></div>
-    <div class="zone-grid">
-      <button class="zone-card" data-jump-game="asteroids"><span>☄️</span><strong>Asteroid Blaster</strong><small>Click the correct asteroid before time runs out.</small></button>
-      <button class="zone-card" data-jump-game="tower"><span>👹</span><strong>Monster Tower</strong><small>Climb floors, beat enemies, use spells.</small></button>
-      <button class="zone-card" data-jump-game="race"><span>🏎️</span><strong>Rocket Race</strong><small>Correct answers boost your rocket past the ghost.</small></button>
-      <button class="zone-card" data-jump-game="treasure"><span>💰</span><strong>Treasure Door</strong><small>Use logic to crack the target number.</small></button>
-      <button class="zone-card" data-jump-game="pizza"><span>🍕</span><strong>Pizza Fractions</strong><small>Build the fraction target by tapping slices.</small></button>
-      <button class="zone-card" data-jump-game="boss"><span>🐲</span><strong>Boss Rush</strong><small>Survive five waves of mixed maths.</small></button>
-    </div>
-  </div>
-</section>
-
-<section class="container section game-zone" id="asteroids" data-game-zone="asteroids">
-  <div class="card pad game-shell asteroid-shell">
-    <div class="game-top"><div><div class="eyebrow">Zone 1</div><h2>☄️ Asteroid Blaster</h2><p class="small">Shoot the asteroid with the correct answer. Wrong clicks cost hearts.</p></div><div class="game-status"><span>❤️ <b data-asteroid-hearts>3</b></span><span>⏱️ <b data-asteroid-time>45</b></span><span>Score <b data-asteroid-score>0</b></span></div></div>
-    <div class="game-question" data-asteroid-question>Press Start Mission</div>
-    <div class="asteroid-field" data-asteroid-field><div class="field-message">Ready?</div></div>
-    <div class="hero-actions"><button class="btn game-btn" data-start-asteroids>Start Mission</button><button class="btn secondary" data-asteroid-hint>Hint</button></div>
-    <p class="battle-feedback" data-asteroid-feedback>Click the moving answer asteroids. It feels more like an arcade game now.</p>
-  </div>
-</section>
-
-<section class="container section game-zone" id="tower" data-game-zone="tower">
-  <div class="card pad game-shell tower-shell">
-    <div class="game-top"><div><div class="eyebrow">Zone 2</div><h2>👹 Monster Tower</h2><p class="small">Each floor has a monster. Correct answers cast spells. Wrong answers damage your shield.</p></div><div class="game-status"><span>Floor <b data-tower-floor>1</b></span><span>Shield <b data-tower-hp>100</b></span><span>Monster <b data-monster-hp>100</b></span></div></div>
-    <div class="tower-stage"><div class="player-side"><div class="fighter" data-tower-player>🧑‍🚀</div><div class="mini-health"><span data-player-health></span></div></div><div class="spell-bolt" data-spell-bolt>✨</div><div class="monster-side"><div class="fighter monster" data-monster-face>👾</div><div class="mini-health monster"><span data-monster-health></span></div></div></div>
-    <div class="game-question" data-tower-question>Press Start Tower</div>
-    <div class="battle-options" data-tower-options></div>
-    <div class="hero-actions"><button class="btn game-btn" data-start-tower>Start Tower</button><button class="btn secondary" data-tower-power="shield">Use Shield Boost</button><button class="btn secondary" data-tower-power="blast">Use Mega Blast</button></div>
-    <p class="battle-feedback" data-tower-feedback>Climb the tower and win coins for each floor.</p>
-  </div>
-</section>
-
-<section class="container section game-zone" id="race" data-game-zone="race">
-  <div class="card pad game-shell race2-shell">
-    <div class="game-top"><div><div class="eyebrow">Zone 3</div><h2>🏎️ Rocket Race</h2><p class="small">Answer quickly to boost your rocket. The ghost moves every second.</p></div><div class="game-status"><span>Lap <b data-race-lap>1</b>/3</span><span>Wins <b data-race-wins>0</b></span></div></div>
-    <div class="race2-track"><div class="race-road"><span class="racer player" data-racer-player>🚀</span><span class="racer ghost" data-racer-ghost>👻</span><span class="race2-finish">FINISH</span></div></div>
-    <div class="game-question" data-race2-question>Press Start Race</div>
-    <div class="battle-options" data-race2-options></div>
-    <div class="hero-actions"><button class="btn game-btn" data-start-race2>Start Race</button><button class="btn secondary" data-race-nitro>Use Nitro</button></div>
-    <p class="battle-feedback" data-race2-feedback>Win 3 laps to get a gem.</p>
-  </div>
-</section>
-
-<section class="container section game-zone" id="treasure" data-game-zone="treasure">
-  <div class="card pad game-shell treasure-shell">
-    <div class="game-top"><div><div class="eyebrow">Zone 4</div><h2>💰 Treasure Door</h2><p class="small">Use every number once to make the target. This is the logic/puzzle part.</p></div><div class="game-status"><span>Doors opened <b data-doors-opened>0</b></span></div></div>
-    <div class="treasure-door"><div class="door-lock" data-door-lock>🔒</div><div class="logic-target"><span>Target</span><strong data-door-target>24</strong></div><div class="logic-numbers" data-door-numbers></div></div>
-    <label class="arcade-label">Your expression<input data-door-expression placeholder="Example: (6 + 2) × 3"></label>
-    <div class="hero-actions"><button class="btn game-btn" data-check-door>Open Door</button><button class="btn secondary" data-new-door>New Door</button><button class="btn secondary" data-door-hint>Hint</button></div>
-    <p class="battle-feedback" data-door-feedback>Use the shown numbers once each. Use +, −, ×, ÷ and brackets.</p>
-  </div>
-</section>
-
-<section class="container section game-zone" id="pizza" data-game-zone="pizza">
-  <div class="card pad game-shell pizza-shell">
-    <div class="game-top"><div><div class="eyebrow">Zone 5</div><h2>🍕 Pizza Fractions</h2><p class="small">Tap slices to match the target fraction. This makes fractions visual and game-like.</p></div><div class="game-status"><span>Orders <b data-pizza-orders>0</b></span><span>Tips <b data-pizza-tips>0</b></span></div></div>
-    <div class="pizza-order">Make: <strong data-pizza-target>1/2</strong></div>
-    <div class="pizza-game"><div class="pizza-pan" data-pizza-pan></div><div class="pizza-controls"><label>Slices<select data-pizza-den><option>2</option><option selected>4</option><option>6</option><option>8</option><option>10</option></select></label><button class="btn secondary" data-reset-pizza>Clear pizza</button><button class="btn game-btn" data-check-pizza>Serve pizza</button></div></div>
-    <p class="battle-feedback" data-pizza-feedback>Tap slices to shade them. Example: 2 out of 4 slices is the same amount as 1 out of 2.</p>
-  </div>
-</section>
-
-<section class="container section game-zone" id="boss" data-game-zone="boss">
-  <div class="card pad game-shell boss-shell">
-    <div class="game-top"><div><div class="eyebrow">Final Zone</div><h2>🐲 Boss Rush</h2><p class="small">Five waves. Mixed topics. Boss gets angry when you are slow.</p></div><div class="game-status"><span>Wave <b data-boss-wave>0</b>/5</span><span>Hearts <b data-boss-hearts>3</b></span><span>Combo <b data-boss-combo>0</b></span></div></div>
-    <div class="boss-arena"><div class="boss-dragon" data-boss-face>🐲</div><div class="boss-health"><span data-boss-health></span></div></div>
-    <div class="game-question" data-boss-question>Press Start Boss Rush</div>
-    <div class="battle-options" data-boss-options></div>
-    <div class="hero-actions"><button class="btn game-btn" data-start-boss>Start Boss Rush</button><button class="btn secondary" data-boss-skip>Use Hint</button></div>
-    <p class="battle-feedback" data-boss-feedback>Beat the boss to win gems and a badge.</p>
-  </div>
-</section>
-
-<section class="container section">
-  <div class="card pad badge-case">
-    <div class="card-head"><div><h2>Badge case</h2><p class="small">Badges unlock when you win different games. They save on this browser.</p></div></div>
-    <div class="badge-grid" data-badge-grid></div>
-  </div>
-</section>
+  </section>
 </main>
-<footer class="footer"><div class="container footer-grid"><div><strong>Maths Universe</strong><br><span>Real mini games, normal learning, worksheets, premium tools, and teacher support together.</span></div><div class="footer-links"><a href="index.html#unlock-map">Course map</a><a href="worksheet-hub.html">Worksheets</a><a href="certificate.html">Certificate</a></div></div></footer>
+
+<footer class="footer"><div class="container footer-grid"><div><strong>Maths Universe</strong><br><span>Game-style maths learning with clear Normal Mode, Game Mode, worksheets, and premium tools.</span></div><div class="footer-links"><a href="fractions-adventure.html">Fraction Adventure</a><a href="fraction-react-game.html">Pizza Game</a><a href="worksheet-hub.html">Worksheets</a></div></div></footer>
 <script src="app.js"></script>
 <script src="games-hub.js"></script>
 </body>

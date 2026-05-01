@@ -1,84 +1,170 @@
-(function(){
-  const KEY='mathsUniverseArcade2StatsV1';
-  const $=s=>document.querySelector(s); const $$=s=>[...document.querySelectorAll(s)];
-  const defaultStats={coins:0,gems:0,stars:0,xp:0,bestStreak:0,avatar:'🧑‍🚀',raceWins:0,doors:0,pizzaOrders:0,pizzaTips:0,badges:{}};
-  function load(){try{return {...defaultStats,...(JSON.parse(localStorage.getItem(KEY))||{})}}catch(e){return {...defaultStats}}}
-  function save(s){localStorage.setItem(KEY,JSON.stringify(s)); render();}
-  function add(points={}){const s=load(); for(const k of ['coins','gems','stars','xp']) s[k]=(s[k]||0)+(points[k]||0); if(points.streak) s.bestStreak=Math.max(s.bestStreak||0,points.streak); if(points.badge) s.badges={...(s.badges||{}),[points.badge]:true}; save(s);}
-  function level(xp){return Math.floor((xp||0)/120)+1}
-  function render(){const s=load(); $$('[data-coins]').forEach(e=>e.textContent=s.coins||0); $$('[data-gems]').forEach(e=>e.textContent=s.gems||0); $$('[data-stars]').forEach(e=>e.textContent=s.stars||0); $$('[data-best-streak]').forEach(e=>e.textContent=s.bestStreak||0); $$('[data-arcade-level]').forEach(e=>e.textContent=level(s.xp)); $$('[data-arcade-avatar]').forEach(e=>e.textContent=s.avatar||'🧑‍🚀'); $$('[data-race-wins]').forEach(e=>e.textContent=s.raceWins||0); $$('[data-doors-opened]').forEach(e=>e.textContent=s.doors||0); $$('[data-pizza-orders]').forEach(e=>e.textContent=s.pizzaOrders||0); $$('[data-pizza-tips]').forEach(e=>e.textContent=s.pizzaTips||0); const xpPct=((s.xp||0)%120)/120*100; $$('[data-xp-bar]').forEach(e=>e.style.width=xpPct+'%'); renderBadges(s);}
-  const badges=[['asteroids','☄️','Asteroid Ace'],['tower','👹','Tower Climber'],['race','🏁','Rocket Racer'],['treasure','💰','Door Cracker'],['pizza','🍕','Fraction Chef'],['boss','🐲','Boss Beater'],['daily','🎁','Daily Explorer']];
-  function renderBadges(s=load()){const grid=$('[data-badge-grid]'); if(!grid)return; grid.innerHTML=badges.map(b=>`<div class="badge-tile ${s.badges&&s.badges[b[0]]?'earned':''}"><span>${b[1]}</span><strong>${b[2]}</strong><small>${s.badges&&s.badges[b[0]]?'Unlocked':'Locked'}</small></div>`).join('');}
-  function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a}
-  function shuffle(a){for(let i=a.length-1;i>0;i--){const j=rand(0,i);[a[i],a[j]]=[a[j],a[i]]}return a}
-  function safeEval(expr){if(!/^[0-9+\-*/().\s]+$/.test(expr))throw new Error('Only numbers, +, -, *, / and brackets are allowed.'); return Function('"use strict";return ('+expr+')')();}
-  function show(el,msg,type=''){if(!el)return; el.textContent=msg; el.className='battle-feedback '+type;}
-  function beep(kind='good'){try{const AudioCtx=window.AudioContext||window.webkitAudioContext; const ctx=new AudioCtx(); const o=ctx.createOscillator(); const g=ctx.createGain(); o.connect(g); g.connect(ctx.destination); const freqs=kind==='bad'?[170,120]:kind==='win'?[440,660,880]:[500,750]; let t=ctx.currentTime; g.gain.value=.035; freqs.forEach((f,i)=>{o.frequency.setValueAtTime(f,t+i*.08)}); o.start(t); o.stop(t+.22);}catch(e){}}
-  function confetti(text='LEVEL UP!'){const c=document.createElement('div'); c.className='arcade-confetti'; c.textContent=text; document.body.appendChild(c); setTimeout(()=>c.remove(),1400);}
-  function makeQuestion(kind='mixed',level=1){
-    const types=kind==='mixed'?['add','times','subtract','fractions','place']: [kind]; const t=types[rand(0,types.length-1)]; let q='',ans=0,hint='';
-    if(t==='add'){const a=rand(10,80+level*12),b=rand(5,70+level*10); q=`${a} + ${b}`; ans=a+b; hint='Split into tens and ones, then add.';}
-    if(t==='subtract'){const b=rand(8,60+level*5),a=b+rand(20,110+level*10); q=`${a} − ${b}`; ans=a-b; hint='Count back or split the second number.';}
-    if(t==='times'){const a=rand(2,12),b=rand(2,12); q=`${a} × ${b}`; ans=a*b; hint='Use your times-table facts.';}
-    if(t==='fractions'){const d=[2,3,4,5,6,8,10][rand(0,6)]; const n=rand(1,d-1); const total=d*rand(2,8); q=`${n}/${d} of ${total}`; ans=total/d*n; hint='Divide by the bottom number, then multiply by the top number.';}
-    if(t==='place'){const a=rand(2,9), b=rand(0,9), c=rand(0,9); const num=a*100+b*10+c; q=`What is the tens digit in ${num}?`; ans=b; hint='Hundreds, tens, ones. The middle digit is the tens digit.';}
-    const opts=[ans]; while(opts.length<4){let spread=Math.max(5,Math.floor(ans/3)); let w=ans+rand(-spread,spread); if(w!==ans && w>=0 && !opts.includes(w)) opts.push(w)}
-    return {q,ans,opts:shuffle(opts),hint,type:t};
+(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const KEY = 'mathsUniverseKidPlayroomV2';
+  const storeDefault = { score: 0, stars: 0, coins: 0, xp: 0, avatar: '🧑‍🚀', bestStreak: 0 };
+  let round = { mode: null, score: 0, stars: 0, streak: 0, answered: 0, hearts: 3, q: null, locked: false };
+
+  function load() { try { return { ...storeDefault, ...(JSON.parse(localStorage.getItem(KEY)) || {}) }; } catch { return { ...storeDefault }; } }
+  function save(s) { localStorage.setItem(KEY, JSON.stringify(s)); renderStats(); }
+  function addReward(points = 10) {
+    const s = load();
+    s.score += points;
+    s.xp += points;
+    s.coins += Math.max(1, Math.floor(points / 5));
+    if (round.streak > s.bestStreak) s.bestStreak = round.streak;
+    if (round.answered > 0 && round.answered % 5 === 0) { s.stars += 1; round.stars += 1; burst('⭐'); confetti(); }
+    save(s);
   }
-  function options(container, opts, cb){if(!container)return; container.innerHTML=opts.map(v=>`<button class="option" data-val="${v}">${v}</button>`).join(''); container.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>cb(Number(b.dataset.val),b)));}
-  function jump(id){const el=document.getElementById(id); if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
-  $$('[data-jump-game]').forEach(b=>b.addEventListener('click',()=>jump(b.dataset.jumpGame)));
-  $('[data-reset-arcade]')?.addEventListener('click',()=>{if(confirm('Reset Arcade 2.0 coins, gems, stars, badges, and avatar?')){localStorage.removeItem(KEY);render();confetti('RESET');}});
-  $$('[data-avatar]').forEach(b=>b.addEventListener('click',()=>{const s=load(); s.avatar=b.dataset.avatar; save(s); beep('good');}));
-  $('[data-daily-chest]')?.addEventListener('click',()=>{const today=new Date().toDateString(); const key='mathsUniverseDailyChestV1'; if(localStorage.getItem(key)===today){confetti('Already opened'); return;} localStorage.setItem(key,today); add({coins:25,stars:10,xp:20,badge:'daily'}); confetti('DAILY CHEST +25'); beep('win');});
+  function level(xp) { return Math.floor((xp || 0) / 100) + 1; }
+  function renderStats() {
+    const s = load();
+    $('[data-play-score]').textContent = s.score;
+    $('[data-play-stars]').textContent = s.stars;
+    $('[data-play-coins]').textContent = s.coins;
+    $('[data-play-level]').textContent = level(s.xp);
+    $('[data-play-avatar]').textContent = s.avatar;
+    $('[data-play-xpbar]').style.width = ((s.xp || 0) % 100) + '%';
+  }
+  function roundStats() {
+    $('[data-round-score]').textContent = round.score;
+    $('[data-round-stars]').textContent = round.stars;
+    $('[data-round-streak]').textContent = round.streak;
+    $('[data-round-progress]').style.width = Math.min(100, (round.answered % 5) * 20) + '%';
+  }
+  function rand(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a; }
+  function shuffle(a) { return [...a].sort(() => Math.random() - 0.5); }
+  function gcd(a, b) { while (b) [a, b] = [b, a % b]; return Math.abs(a || 1); }
+  function simplify(n, d) { const g = gcd(n, d); return [n / g, d / g]; }
+  function same(n1, d1, n2, d2) { const a = simplify(n1, d1), b = simplify(n2, d2); return a[0] === b[0] && a[1] === b[1]; }
+  function show(msg, type = '') { const el = $('[data-play-feedback]'); el.textContent = msg; el.className = 'play-feedback ' + type; }
+  function beep(type = 'good') { try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.frequency.value = type === 'good' ? 720 : 180; gain.gain.value = 0.04; osc.connect(gain); gain.connect(ctx.destination); osc.start(); setTimeout(() => { osc.stop(); ctx.close(); }, type === 'good' ? 90 : 150); } catch {} }
+  function fractionText(n, d, big = false) { return `<span class="kid-fraction ${big ? 'big' : ''}"><span>${n}</span><i></i><span>${d}</span></span>`; }
+  function pizzaSvg(n, d, size = 180) {
+    const cx = size / 2, cy = size / 2, r = size / 2 - 8;
+    let parts = `<svg class="kid-pizza" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><circle cx="${cx}" cy="${cy}" r="${r + 5}" fill="#e8c87a"/><circle cx="${cx}" cy="${cy}" r="${r}" fill="#f7ead8"/>`;
+    for (let i = 0; i < d; i++) {
+      const sa = (i * 360) / d - 90, ea = ((i + 1) * 360) / d - 90;
+      const s = Math.PI / 180 * sa, e = Math.PI / 180 * ea;
+      const x1 = cx + r * Math.cos(s), y1 = cy + r * Math.sin(s);
+      const x2 = cx + r * Math.cos(e), y2 = cy + r * Math.sin(e);
+      const large = ea - sa > 180 ? 1 : 0;
+      const filled = i < n;
+      const fill = filled ? `hsl(${28 + i * 24}, 85%, 62%)` : '#f7ead8';
+      parts += `<path class="pizza-piece" d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${large} 1 ${x2},${y2} Z" fill="${fill}" stroke="#c4956a" stroke-width="3"/>`;
+      if (filled) {
+        const mid = (s + e) / 2;
+        parts += `<circle cx="${cx + r * .52 * Math.cos(mid)}" cy="${cy + r * .52 * Math.sin(mid)}" r="5" fill="#d44" opacity=".8"/>`;
+      }
+    }
+    return parts + `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#c4956a" stroke-width="4"/></svg>`;
+  }
+  function barSvg(n, d, width = 230) {
+    let html = `<div class="kid-bar" style="--d:${d}">`;
+    for (let i = 0; i < d; i++) html += `<span class="${i < n ? 'on' : ''}"></span>`;
+    return html + '</div>';
+  }
+  function options(vals, answer, cb) {
+    return `<div class="kid-options">${vals.map(v => `<button data-opt="${v}" class="kid-option">${typeof v === 'string' && v.includes('/') ? fractionText(...v.split('/').map(Number)) : v}</button>`).join('')}</div>`;
+  }
+  function setTitle(t) { $('[data-game-title]').textContent = t; }
+  function openMode(mode) {
+    round = { mode, score: 0, stars: 0, streak: 0, answered: 0, hearts: 3, q: null, locked: false };
+    $('[data-play-menu]').classList.add('hidden');
+    $('[data-play-game]').classList.remove('hidden');
+    nextQuestion();
+    window.scrollTo({ top: $('[data-play-game]').offsetTop - 90, behavior: 'smooth' });
+  }
+  function backMenu() { $('[data-play-menu]').classList.remove('hidden'); $('[data-play-game]').classList.add('hidden'); }
 
-  // Asteroid Blaster
-  let astTimer=null, astTime=45, astHearts=3, astScore=0, astCurrent=null;
-  const astField=$('[data-asteroid-field]');
-  function astRender(){ $('[data-asteroid-hearts]').textContent=astHearts; $('[data-asteroid-time]').textContent=astTime; $('[data-asteroid-score]').textContent=astScore; }
-  function astQuestion(){astCurrent=makeQuestion('mixed',level(load().xp)); $('[data-asteroid-question]').textContent=astCurrent.q; astField.innerHTML=''; const values=[...astCurrent.opts]; values.forEach((v,i)=>{const a=document.createElement('button'); a.className='asteroid-rock'; a.textContent=v; a.dataset.val=v; a.style.left=rand(3,82)+'%'; a.style.top=rand(8,72)+'%'; a.style.animationDelay=(i*.25)+'s'; a.addEventListener('click',()=>{if(Number(a.dataset.val)===astCurrent.ans){a.classList.add('boom'); astScore++; add({coins:3,stars:1,xp:8,streak:astScore}); show($('[data-asteroid-feedback]'),'Boom! Correct asteroid destroyed. +3 coins','good'); beep('good'); if(astScore>=8){clearInterval(astTimer); add({gems:1,badge:'asteroids'}); confetti('ASTEROID ACE'); show($('[data-asteroid-feedback]'),'Mission clear! You earned a gem and a badge.','good'); return;} setTimeout(astQuestion,250);}else{a.classList.add('wrong'); astHearts--; show($('[data-asteroid-feedback]'),'Wrong asteroid! Hint: '+astCurrent.hint,'bad'); beep('bad'); if(astHearts<=0) astLose(); astRender();}}); astField.appendChild(a);}); astRender();}
-  function astLose(){clearInterval(astTimer); astField.innerHTML='<div class="field-message">Mission failed. Try again!</div>'; show($('[data-asteroid-feedback]'),'Out of hearts. Start the mission again.','bad');}
-  $('[data-start-asteroids]')?.addEventListener('click',()=>{clearInterval(astTimer); astTime=45; astHearts=3; astScore=0; astQuestion(); astTimer=setInterval(()=>{astTime--; astRender(); if(astTime<=0){clearInterval(astTimer); if(astScore>=5){add({coins:10,xp:20,badge:'asteroids'}); confetti('SURVIVED'); show($('[data-asteroid-feedback]'),'Time! You survived and earned a badge.','good');}else astLose();}},1000);});
-  $('[data-asteroid-hint]')?.addEventListener('click',()=>{if(astCurrent)show($('[data-asteroid-feedback]'),astCurrent.hint,'good');});
+  function makePizzaQ() {
+    const ds = [2, 3, 4, 5, 6, 8]; const d = ds[rand(0, ds.length - 1)]; const n = rand(1, d - 1);
+    const wrong = new Set();
+    while (wrong.size < 3) { const wd = ds[rand(0, ds.length - 1)], wn = rand(1, wd - 1); if (!(wn === n && wd === d)) wrong.add(`${wn}/${wd}`); }
+    return { kind: 'pizza', n, d, answer: `${n}/${d}`, opts: shuffle([`${n}/${d}`, ...wrong]), hint: `Count the coloured slices: ${n} out of ${d}.` };
+  }
+  function makeBuilderQ() { const d = [2, 3, 4, 5, 6, 8][rand(0, 5)]; const n = rand(1, d - 1); return { kind: 'builder', n, d, answer: n, hint: `Colour ${n} block${n === 1 ? '' : 's'} out of ${d}.` }; }
+  function makeCompareQ() { const d = [3, 4, 5, 6, 8][rand(0, 4)]; let n1 = rand(1, d - 1), n2 = rand(1, d - 1); while (n2 === n1) n2 = rand(1, d - 1); return { kind: 'compare', d, n1, n2, answer: n1 > n2 ? 'left' : 'right', hint: `Same bottom number: bigger top number wins.` }; }
+  function makeMonsterQ() { const d = [4, 5, 6, 8][rand(0, 3)]; const a = rand(1, d - 2), b = rand(1, d - a); const target = a + b; return { kind: 'monster', d, a, b, target, answer: `${a}/${d}+${b}/${d}`, hint: `The monster needs ${target}/${d}. Pick pieces that add to ${target}.` }; }
+  function makeBossQ() { const makers = [makePizzaQ, makeBuilderQ, makeCompareQ, makeMonsterQ]; return makers[rand(0, makers.length - 1)](); }
 
-  // Monster Tower
-  let floor=1, playerHP=100, monsterHP=100, towerQ=null, monsterFaces=['👾','👹','🤖','🧟','🐲'];
-  function towerBars(){ $('[data-tower-floor]').textContent=floor; $('[data-tower-hp]').textContent=Math.max(0,playerHP); $('[data-monster-hp]').textContent=Math.max(0,monsterHP); $('[data-player-health]').style.width=Math.max(0,playerHP)+'%'; $('[data-monster-health]').style.width=Math.max(0,monsterHP)+'%'; $('[data-monster-face]').textContent=monsterFaces[(floor-1)%monsterFaces.length]; $('[data-tower-player]').textContent=load().avatar; }
-  function towerQuestion(){towerQ=makeQuestion(floor>3?'mixed':'times',floor); $('[data-tower-question]').textContent=towerQ.q; options($('[data-tower-options]'),towerQ.opts,(v,b)=>{if(v===towerQ.ans){monsterHP-=30; $('[data-spell-bolt]').classList.add('cast'); setTimeout(()=>$('[data-spell-bolt]').classList.remove('cast'),500); add({coins:4,xp:10}); show($('[data-tower-feedback]'),'Spell hit! Monster took damage.','good'); beep('good'); if(monsterHP<=0){floor++; if(floor>5){add({gems:2,badge:'tower'}); confetti('TOWER CLEARED'); show($('[data-tower-feedback]'),'Tower cleared! +2 gems and a badge.','good'); $('[data-tower-options]').innerHTML=''; return;} monsterHP=100; show($('[data-tower-feedback]'),'Floor cleared! New monster appears.','good');} towerQuestion();}else{b.classList.add('wrong'); playerHP-=18; show($('[data-tower-feedback]'),'Monster hit your shield. Hint: '+towerQ.hint,'bad'); beep('bad'); if(playerHP<=0){show($('[data-tower-feedback]'),'Shield broken. Start the tower again.','bad'); $('[data-tower-options]').innerHTML='';} } towerBars();}); towerBars();}
-  $('[data-start-tower]')?.addEventListener('click',()=>{floor=1;playerHP=100;monsterHP=100;towerQuestion();});
-  $$('[data-tower-power]').forEach(b=>b.addEventListener('click',()=>{const s=load(); if(b.dataset.towerPower==='shield'){if(s.coins<20)return show($('[data-tower-feedback]'),'Need 20 coins for Shield Boost.','bad'); s.coins-=20; playerHP=Math.min(100,playerHP+35); save(s); towerBars(); show($('[data-tower-feedback]'),'Shield boosted.','good');} if(b.dataset.towerPower==='blast'){if(s.gems<1)return show($('[data-tower-feedback]'),'Need 1 gem for Mega Blast.','bad'); s.gems-=1; monsterHP-=55; save(s); towerBars(); show($('[data-tower-feedback]'),'Mega Blast fired!','good');}}));
+  function nextQuestion() {
+    round.locked = false;
+    if (round.mode === 'pizza') renderPizza(makePizzaQ());
+    if (round.mode === 'builder') renderBuilder(makeBuilderQ());
+    if (round.mode === 'compare') renderCompare(makeCompareQ());
+    if (round.mode === 'monster') renderMonster(makeMonsterQ());
+    if (round.mode === 'boss') renderBoss(makeBossQ());
+    roundStats();
+  }
+  function correct(msg = 'Great!') {
+    if (round.locked) return; round.locked = true;
+    round.score += 10; round.streak += 1; round.answered += 1;
+    addReward(10); show(msg + ' +10 points!', 'good'); beep('good'); burst('⭐');
+    if (round.mode === 'boss' && round.answered >= 5) { show('🐲 Dragon defeated! You earned a Fraction Hero star!', 'good'); confetti(); }
+    roundStats(); setTimeout(nextQuestion, 1100);
+  }
+  function wrong(msg) {
+    if (round.locked) return;
+    round.streak = 0; round.hearts -= 1; show(msg, 'bad'); beep('bad'); shake(); roundStats();
+  }
 
-  // Rocket Race
-  let racePlayer=0,raceGhost=0,raceLap=1,raceQ=null,raceInt=null;
-  function raceRender(){ $('[data-racer-player]').style.left=Math.min(96,racePlayer)+'%'; $('[data-racer-ghost]').style.left=Math.min(96,raceGhost)+'%'; $('[data-race-lap]').textContent=raceLap; $('[data-race-wins]').textContent=load().raceWins||0; }
-  function raceAsk(){raceQ=makeQuestion(Math.random()>.5?'add':'times',raceLap); $('[data-race2-question]').textContent=raceQ.q; options($('[data-race2-options]'),raceQ.opts,(v,b)=>{if(v===raceQ.ans){racePlayer+=18; add({coins:3,xp:7}); show($('[data-race2-feedback]'),'Boost! Correct answer.','good'); beep('good'); if(racePlayer>=100){raceLap++; racePlayer=0; raceGhost=0; if(raceLap>3){const s=load(); s.raceWins=(s.raceWins||0)+1; s.coins=(s.coins||0)+20; s.gems=(s.gems||0)+1; s.xp=(s.xp||0)+40; s.badges={...(s.badges||{}),race:true}; save(s); clearInterval(raceInt); confetti('RACE WON'); show($('[data-race2-feedback]'),'You won the race! +20 coins +1 gem.','good'); return;} } raceAsk();}else{b.classList.add('wrong'); raceGhost+=9; show($('[data-race2-feedback]'),'Ghost boost. Hint: '+raceQ.hint,'bad'); beep('bad');} raceRender();});}
-  $('[data-start-race2]')?.addEventListener('click',()=>{clearInterval(raceInt);racePlayer=0;raceGhost=0;raceLap=1;raceRender();raceAsk();raceInt=setInterval(()=>{raceGhost+=4;raceRender(); if(raceGhost>=100){clearInterval(raceInt);show($('[data-race2-feedback]'),'The ghost won. Try again.','bad');}},1000);});
-  $('[data-race-nitro]')?.addEventListener('click',()=>{const s=load(); if(s.coins<15)return show($('[data-race2-feedback]'),'Need 15 coins for nitro.','bad'); s.coins-=15; save(s); racePlayer+=20; raceRender(); show($('[data-race2-feedback]'),'Nitro used!','good');});
+  function renderPizza(q) {
+    round.q = q; setTitle('🍕 Name That Fraction');
+    $('[data-game-area]').innerHTML = `<p class="kid-prompt">How much pizza is coloured?</p>${pizzaSvg(q.n, q.d)}${options(q.opts, q.answer)}<p class="small">Tap the fraction that matches the pizza.</p>`;
+    $$('[data-opt]').forEach(b => b.addEventListener('click', () => b.dataset.opt === q.answer ? correct('Amazing pizza maths!') : wrong(`Almost! ${q.hint}`)));
+  }
+  function renderBuilder(q) {
+    round.q = q; setTitle('🎨 Colour It In');
+    $('[data-game-area]').innerHTML = `<p class="kid-prompt">Colour ${fractionText(q.n, q.d, true)} of the blocks.</p><div class="builder-blocks">${Array.from({ length: q.d }, (_, i) => `<button data-block="${i}"></button>`).join('')}</div><button class="btn game-btn" data-check-builder>✅ Check!</button><p class="small">Tap blocks to colour them.</p>`;
+    let count = 0;
+    $$('[data-block]').forEach((b, idx) => b.addEventListener('click', () => { b.classList.toggle('on'); count = $$('[data-block].on').length; }));
+    $('[data-check-builder]').addEventListener('click', () => count === q.n ? correct('Perfect colouring!') : wrong(`Count again. You coloured ${count}, but you need ${q.n}.`));
+  }
+  function renderCompare(q) {
+    round.q = q; setTitle('🚀 Rocket Compare');
+    $('[data-game-area]').innerHTML = `<p class="kid-prompt">Which rocket has the bigger fraction?</p><div class="rocket-compare"><button data-side="left"><span class="rocket">🚀</span>${pizzaSvg(q.n1, q.d, 120)}${fractionText(q.n1, q.d)}</button><strong>VS</strong><button data-side="right"><span class="rocket">🚀</span>${pizzaSvg(q.n2, q.d, 120)}${fractionText(q.n2, q.d)}</button></div>`;
+    $$('[data-side]').forEach(b => b.addEventListener('click', () => { if (b.dataset.side === q.answer) { b.classList.add('fly'); correct('Rocket boost!'); } else wrong(q.hint); }));
+  }
+  function renderMonster(q) {
+    round.q = q; setTitle('👾 Feed the Monster');
+    const foods = shuffle([`${q.a}/${q.d}`, `${q.b}/${q.d}`, `${rand(1, q.d - 1)}/${q.d}`, `${rand(1, q.d - 1)}/${q.d}`]);
+    $('[data-game-area]').innerHTML = `<p class="kid-prompt">The monster wants ${fractionText(q.target, q.d, true)} energy. Pick two snacks.</p><div class="monster-box"><div class="monster-face">👾</div>${barSvg(q.target, q.d)}</div><div class="snack-row">${foods.map(f => `<button data-food="${f}" class="snack">${fractionText(...f.split('/').map(Number))}</button>`).join('')}</div><button class="btn game-btn" data-feed-check>Feed!</button>`;
+    const picked = [];
+    $$('[data-food]').forEach(b => b.addEventListener('click', () => { if (picked.includes(b)) return; if (picked.length >= 2) return; picked.push(b); b.classList.add('picked'); }));
+    $('[data-feed-check]').addEventListener('click', () => {
+      if (picked.length !== 2) return wrong('Pick two snacks first.');
+      const total = picked.map(b => Number(b.dataset.food.split('/')[0])).reduce((a, b) => a + b, 0);
+      total === q.target ? correct('Monster is happy!') : wrong(`The snacks make ${total}/${q.d}. The monster needs ${q.target}/${q.d}.`);
+    });
+  }
+  function renderBoss(q) {
+    round.q = q; setTitle('🐲 Fraction Boss');
+    if (round.answered >= 5) { $('[data-game-area]').innerHTML = `<div class="boss-win">🏆<h2>Fraction Dragon defeated!</h2><p>You answered 5 boss questions.</p><button class="btn game-btn" data-restart-boss>Play Again</button></div>`; $('[data-restart-boss]').addEventListener('click', () => openMode('boss')); return; }
+    const wave = `<div class="boss-head"><span>🐲</span><div><strong>Dragon HP</strong><div class="boss-hp"><i style="width:${100 - round.answered * 20}%"></i></div></div><span>❤️ ${Math.max(0, round.hearts)}</span></div>`;
+    $('[data-game-area]').innerHTML = wave + `<div class="boss-inner"></div>`;
+    const holder = $('.boss-inner');
+    if (q.kind === 'pizza') holder.innerHTML = `<p class="kid-prompt">Boss asks: how much pizza?</p>${pizzaSvg(q.n, q.d)}${options(q.opts, q.answer)}`;
+    if (q.kind === 'builder') holder.innerHTML = `<p class="kid-prompt">Boss says: colour ${fractionText(q.n, q.d, true)}</p><div class="builder-blocks">${Array.from({ length: q.d }, (_, i) => `<button data-block="${i}"></button>`).join('')}</div><button class="btn game-btn" data-check-builder>Check</button>`;
+    if (q.kind === 'compare') holder.innerHTML = `<p class="kid-prompt">Boss asks: which is bigger?</p><div class="rocket-compare"><button data-side="left">${pizzaSvg(q.n1, q.d, 120)}${fractionText(q.n1, q.d)}</button><strong>VS</strong><button data-side="right">${pizzaSvg(q.n2, q.d, 120)}${fractionText(q.n2, q.d)}</button></div>`;
+    if (q.kind === 'monster') holder.innerHTML = `<p class="kid-prompt">Boss wants ${fractionText(q.target, q.d, true)} energy. Pick the answer.</p>${barSvg(q.target, q.d)}${options(shuffle([`${q.target}/${q.d}`, `${Math.max(1, q.target-1)}/${q.d}`, `${Math.min(q.d, q.target+1)}/${q.d}`]), `${q.target}/${q.d}`)}`;
+    wireBoss(q);
+  }
+  function wireBoss(q) {
+    if (q.kind === 'pizza') $$('[data-opt]').forEach(b => b.addEventListener('click', () => b.dataset.opt === q.answer ? correct('Boss hit!') : wrong(q.hint)));
+    if (q.kind === 'builder') { let count = 0; $$('[data-block]').forEach(b => b.addEventListener('click', () => { b.classList.toggle('on'); count = $$('[data-block].on').length; })); $('[data-check-builder]').addEventListener('click', () => count === q.n ? correct('Boss hit!') : wrong(q.hint)); }
+    if (q.kind === 'compare') $$('[data-side]').forEach(b => b.addEventListener('click', () => b.dataset.side === q.answer ? correct('Boss hit!') : wrong(q.hint)));
+    if (q.kind === 'monster') $$('[data-opt]').forEach(b => b.addEventListener('click', () => b.dataset.opt === `${q.target}/${q.d}` ? correct('Boss hit!') : wrong(q.hint)));
+  }
+  function shake() { const a = $('.play-game-area'); a.classList.add('shake'); setTimeout(() => a.classList.remove('shake'), 400); }
+  function burst(char) { const el = document.createElement('div'); el.className = 'kid-burst'; el.textContent = char; document.body.appendChild(el); setTimeout(() => el.remove(), 900); }
+  function confetti() { for (let i = 0; i < 26; i++) { const c = document.createElement('span'); c.className = 'kid-confetti'; c.style.left = rand(5, 95) + '%'; c.style.background = ['#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff', '#cc5de8'][i % 5]; c.style.animationDelay = (Math.random() * .3) + 's'; document.body.appendChild(c); setTimeout(() => c.remove(), 1800); } }
 
-  // Treasure Door
-  const doors=[{n:[2,3,4,5],t:17,h:'Try 5 × 3, then use 4 and 2.'},{n:[6,2,3,1],t:24,h:'Try 6 × (something). Can 2, 3, and 1 make 4?'},{n:[8,4,2,1],t:16,h:'Try making 2, then multiply by 8.'},{n:[7,5,2,2],t:20,h:'Can you make 10, then double it?'},{n:[9,3,2,1],t:14,h:'Try 9 + 3 first.'}];
-  let door=doors[0];
-  function newDoor(){door=doors[rand(0,doors.length-1)]; $('[data-door-target]').textContent=door.t; $('[data-door-numbers]').innerHTML=door.n.map(n=>`<span>${n}</span>`).join(''); $('[data-door-expression]').value=''; $('[data-door-lock]').textContent='🔒'; show($('[data-door-feedback]'),'Use the shown numbers once each. Use +, −, ×, ÷ and brackets.','');}
-  $('[data-new-door]')?.addEventListener('click',newDoor);
-  $('[data-door-hint]')?.addEventListener('click',()=>show($('[data-door-feedback]'),door.h,'good'));
-  $('[data-check-door]')?.addEventListener('click',()=>{let expr=$('[data-door-expression]').value.replaceAll('×','*').replaceAll('÷','/'); try{const used=(expr.match(/\d+/g)||[]).map(Number).sort((a,b)=>a-b).join(','); const need=[...door.n].sort((a,b)=>a-b).join(','); if(used!==need)throw new Error('Use each number exactly once.'); const val=safeEval(expr); if(Math.abs(val-door.t)<1e-9){const s=load();s.doors=(s.doors||0)+1;s.coins=(s.coins||0)+15;s.xp=(s.xp||0)+25;s.badges={...(s.badges||{}),treasure:true};save(s);$('[data-door-lock]').textContent='🔓';confetti('DOOR OPEN');show($('[data-door-feedback]'),'Treasure opened! +15 coins.','good');}else{show($('[data-door-feedback]'),`That makes ${val}, not ${door.t}. Try again.`,'bad');}}catch(e){show($('[data-door-feedback]'),e.message,'bad');}});
-
-  // Pizza Fractions
-  let pizzaTarget={n:1,d:2}, shaded=0;
-  function makeTarget(){const d=[2,4,6,8,10][rand(0,4)]; pizzaTarget={d,n:rand(1,d-1)}; $('[data-pizza-target]').textContent=`${pizzaTarget.n}/${pizzaTarget.d}`; const den=$('[data-pizza-den]'); den.value=String(d); drawPizza();}
-  function gcd(a,b){while(b){[a,b]=[b,a%b]}return a}
-  function sameFrac(n1,d1,n2,d2){const g1=gcd(n1,d1),g2=gcd(n2,d2); return n1/g1===n2/g2 && d1/g1===d2/g2;}
-  function drawPizza(){const den=Number($('[data-pizza-den]').value||4); const pan=$('[data-pizza-pan]'); shaded=0; pan.innerHTML=''; pan.style.setProperty('--slices',den); for(let i=0;i<den;i++){const b=document.createElement('button'); b.className='pizza-slice'; b.textContent=i+1; b.addEventListener('click',()=>{b.classList.toggle('on'); shaded=[...pan.querySelectorAll('.pizza-slice.on')].length;}); pan.appendChild(b);} }
-  $('[data-pizza-den]')?.addEventListener('change',drawPizza);
-  $('[data-reset-pizza]')?.addEventListener('click',drawPizza);
-  $('[data-check-pizza]')?.addEventListener('click',()=>{const den=Number($('[data-pizza-den]').value||4); if(sameFrac(shaded,den,pizzaTarget.n,pizzaTarget.d)){const s=load();s.pizzaOrders=(s.pizzaOrders||0)+1;s.pizzaTips=(s.pizzaTips||0)+5;s.coins=(s.coins||0)+8;s.xp=(s.xp||0)+15;s.badges={...(s.badges||{}),pizza:true};save(s);confetti('ORDER SERVED');show($('[data-pizza-feedback]'),`Correct! ${shaded}/${den} is the same as ${pizzaTarget.n}/${pizzaTarget.d}. +8 coins`,'good'); makeTarget();}else{show($('[data-pizza-feedback]'),`Not yet. You made ${shaded}/${den}. Try matching ${pizzaTarget.n}/${pizzaTarget.d}.`,'bad');}});
-
-  // Boss Rush
-  let bossWave=0,bossHearts=3,bossHP=100,bossCombo=0,bossQ=null;
-  function bossRender(){ $('[data-boss-wave]').textContent=bossWave; $('[data-boss-hearts]').textContent=bossHearts; $('[data-boss-combo]').textContent=bossCombo; $('[data-boss-health]').style.width=Math.max(0,bossHP)+'%'; }
-  function bossAsk(){bossQ=makeQuestion('mixed',bossWave+2); $('[data-boss-question]').textContent=bossQ.q; options($('[data-boss-options]'),bossQ.opts,(v,b)=>{if(v===bossQ.ans){bossCombo++; bossHP-=25; add({coins:5,xp:12,streak:bossCombo}); show($('[data-boss-feedback]'),'Combo hit! Boss damaged.','good'); beep('good'); if(bossHP<=0){bossWave++; if(bossWave>=5){add({gems:3,coins:40,badge:'boss'}); confetti('BOSS DEFEATED'); show($('[data-boss-feedback]'),'Boss defeated! +3 gems +40 coins.','good'); $('[data-boss-options]').innerHTML=''; bossRender(); return;} bossHP=100; show($('[data-boss-feedback]'),'Next wave!','good');} bossAsk();}else{b.classList.add('wrong'); bossHearts--; bossCombo=0; show($('[data-boss-feedback]'),'Boss counterattack! Hint: '+bossQ.hint,'bad'); beep('bad'); if(bossHearts<=0){show($('[data-boss-feedback]'),'Boss rush failed. Try again.','bad'); $('[data-boss-options]').innerHTML='';} } bossRender();}); bossRender();}
-  $('[data-start-boss]')?.addEventListener('click',()=>{bossWave=0;bossHearts=3;bossHP=100;bossCombo=0;bossAsk();});
-  $('[data-boss-skip]')?.addEventListener('click',()=>{if(bossQ)show($('[data-boss-feedback]'),bossQ.hint,'good');});
-
-  render(); newDoor(); makeTarget(); towerBars(); raceRender(); bossRender(); astRender();
+  $$('[data-open-mode]').forEach(b => b.addEventListener('click', () => openMode(b.dataset.openMode)));
+  $('[data-back-menu]').addEventListener('click', backMenu);
+  $('[data-next-question]').addEventListener('click', nextQuestion);
+  $('[data-play-hint]').addEventListener('click', () => round.q && show(round.q.hint || 'Look at the picture and count the pieces.', 'good'));
+  $('[data-reset-playroom]').addEventListener('click', () => { if (confirm('Reset Playroom stars, score, coins, and XP?')) { localStorage.removeItem(KEY); renderStats(); } });
+  $$('[data-avatar]').forEach(b => b.addEventListener('click', () => { const s = load(); s.avatar = b.dataset.avatar; save(s); }));
+  renderStats(); roundStats();
 })();
